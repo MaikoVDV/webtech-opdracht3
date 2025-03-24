@@ -1,0 +1,19 @@
+/* A collection of stylesheets used by all the webpages. */
+@import url(navbar.css);
+
+body {
+  background: #EEE;
+  margin: 0px;
+}
+main {
+  width: 100%;
+  margin: 0px auto;
+  background: white; /* Removing special background later - only used to test bounds in development. */
+}
+
+/* Desktop displays */
+@media (min-width: 1100px) {
+  main {
+    max-width: 60%;
+  }
+}
