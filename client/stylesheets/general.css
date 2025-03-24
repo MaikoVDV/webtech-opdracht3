@@ -4,11 +4,14 @@
 body {
   background: #EEE;
   margin: 0px;
+
+  --color-confirm: #ffcd00;
+  --color-confirm-2: #ffbf00;
 }
+
 main {
   width: 100%;
   margin: 0px auto;
-  background: white; /* Removing special background later - only used to test bounds in development. */
 }
 
 /* Desktop displays */

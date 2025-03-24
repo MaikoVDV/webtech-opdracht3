@@ -3,6 +3,7 @@
   <head>
     <title>Webtech 3</title>
     <link rel="stylesheet" href="/stylesheets/general.css" defer>
+    <link rel="stylesheet" href="/stylesheets/profile_form.css" defer>
   </head>
   <body>
     <header>
@@ -19,13 +20,30 @@
       </navbar>
     </header>
     <main>
-      <h1>fakka</h1>
-      <form class="login-form" action="/login" method="post">
-        <label for="login-form__username">Username</label>
-        <input id="login-form__username" name="username" type="text">
-        <label for="login-form__password">Password</label>
-        <input id="login-form__password" name="password" type="text">
-        <input type="submit" value="Submit!">
+      <h1>what's poppin</h1>
+      <form class="profile-form" action="/login" method="post">
+        <h2 class="profile-form__title">Login</h2>
+        <div class="profile-form__item">
+          <label for="profile-login-form__username">Username</label>
+          <input class="profile-form__text" id="login-form__username" name="username" type="text">
+        </div>
+        <div class="profile-form__item">
+          <label for="profile-login-form__password">Password</label>
+          <input class="profile-form__text" id="login-form__password" name="password" type="text">
+        </div>
+        <input class="profile-form__submit" type="submit" value="Submit!">
+      </form>
+      <form class="profile-form" action="/register" method="post">
+        <h2 class="profile-form__title">Register</h2>
+        <div class="profile-form__item">
+          <label for="profile-login-form__username">Username</label>
+          <input class="profile-form__text" id="login-form__username" name="username" type="text">
+        </div>
+        <div class="profile-form__item">
+          <label for="profile-login-form__password">Password</label>
+          <input class="profile-form__text" id="login-form__password" name="password" type="text">
+        </div>
+        <input class="profile-form__submit" type="submit" value="Submit!">
       </form>
     </main>
   </body>

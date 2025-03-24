@@ -1,61 +1,40 @@
-const path = require("path");
-const express = require("express");
-const bodyParser = require("body-parser"); // For easier parsing of request bodies, like form data.
-const { param, query, validationResult } = require("express-validator");
+import { loginRouteHandler, registerRouteHandler } from "./profile-management.js";
+import { connectDB } from "./connect-database.js";
 
-const fs = require("fs");
-const dbFile = "database.db";
-const exists = fs.existsSync(dbFile);
-if (!exists) {
-  fs.openSync(dbFile, "w");
-}
+import path from "path";
+import { fileURLToPath } from "url";
+import express from "express";
+import bodyParser from "body-parser"; // For easier parsing of request bodies, like form data.
+import { param, query, validationResult } from "express-validator";
 
-const sqlite3 = require("sqlite3").verbose();
-const db = new sqlite3.Database(dbFile);
-
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const app = express();
 const port = 8010;
 
-db.serialize(() => {
-  db.run(`
-    CREATE TABLE IF NOT EXISTS Students (
-    id             integer         PRIMARY KEY AUTOINCREMENT,
-    first_name     VARCHAR(32)     NOT NULL,
-    last_name      VARCHAR(32)     NOT NULL
-    );
-  `);
-
-  // const addStudentsStmt = db.prepare(`
-  //   INSERT INTO Students (first_name, last_name)
-  //   VALUES
-  //   (?, ?)
-  // `);
-  // addStudentsStmt.run("Maiko", "van der Veen");
-  // addStudentsStmt.run("Bessel", "Withoos");
-})
+const db = await connectDB();
+console.log(db);
 
 app.use(bodyParser.urlencoded({ extended: true }));
-app.use(express.static(path.join(__dirname, "client")));
+app.use(express.static("client"));
 
 app.get("/", (req, res) => {
-  res.sendFile(path.join(__dirname, "client", "index.html"));
+  res.sendFile(path.join(__dirname, "client/index.html"));
 });
 app.get("/users/:username", (req, res) => {
   console.log("users: " + req.params.username);
-  res.sendFile(path.join(__dirname, "client", "profiles", "profile.html"));
+  res.sendFile(path.join(__dirname, "client/profiles/profile.html"));
 });
 
 app.get("/users/:username/friends", (req, res) => {
   console.log("friends: " + req.params.username);
-  res.sendFile(path.join(__dirname, "client", "profiles", "profile.html"));
+  res.sendFile(path.join(__dirname, "client/profiles/friends.html"));
 });
 
-app.post("/login", (req, res) => {
-  const { username, password } = req.body;
-  res.send("Hi " + username);
-});
+app.post("/login", loginRouteHandler);
+app.post("/register", registerRouteHandler);
 
 app.get("/profile", (req, res) => {
+  console.log(db);
   db.all('SELECT * FROM Students', [], (err, rows) => {
     if (err) {
         res.status(500).json({ error: err.message });

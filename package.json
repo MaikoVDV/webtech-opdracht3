@@ -2,6 +2,7 @@
   "name": "webtech-opdracht3",
   "version": "1.0.0",
   "description": "The 3rd assignment for our WebTech class at Utrecht University",
+  "type": "module",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
