@@ -1,12 +1,18 @@
 /* A collection of stylesheets used by all the webpages. */
 @import url(navbar.css);
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap');
 
 body {
   background: #EEE;
   margin: 0px;
 
+  font-family: "Montserrat", sans-serif;
+  font-optical-sizing: auto;
+  font-style: normal;
+
   --color-confirm: #ffcd00;
   --color-confirm-2: #ffbf00;
+  --default-border-radius: 7px;
 }
 
 main {

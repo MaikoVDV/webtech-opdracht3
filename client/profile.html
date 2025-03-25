@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Webtech 3</title>
+    <link rel="stylesheet" href="/stylesheets/general.css" defer>
+    <link rel="stylesheet" href="/stylesheets/profile.css" defer>
+
+    <script src="/scripts/navbar.js" type="module" defer></script>
+    <script src="/scripts/profile.js" type="module" defer></script>
+  </head>
+  <body>
+    <header>
+      <navbar class="navbar">
+        <ul class="navbar__pages">
+          <li><a href="/">Home</a></li>
+          <li><a href="/users/">Profile</a></li>
+          <li><a href="/api/debug/all-users">View students table</a></li>
+          <!-- <li><a href="/users/currentUser/friends">Friends</a></li> -->
+        </ul>
+        
+        <ul class="navbar__profile"></ul> <!-- Filled by navbar.js -->
+      </navbar>
+    </header>
+    <main>
+      <article class="profile">
+        <section class="profile__header">
+          <section class="profile__bio-information">
+            <h1 class="profile__fullname">Full name</h1>
+            <p class="profile__bio-data" id="email-display">Email</p>
+            <p class="profile__bio-data" id="age-display">Age</p>
+          </section>
+          <img class="profile__picture">
+        </section>
+        <section class="profile__friends">
+          <h2 class="profile__sec-header">Friends</h2>
+          <ul class="profile__list-container" id="friends-container"></ul>
+        </section>
+        <section class="profile__courses">
+          <h2 class="profile__sec-header">Courses</h2>
+          <ul class="profile__list-container" id="courses-container"></ul>
+        </section>
+      </article>
+    </main>
+  </body>
+</html>

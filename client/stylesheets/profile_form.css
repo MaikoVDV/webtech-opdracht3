@@ -5,7 +5,6 @@
   background: #FFF;
   padding: 1rem;
 
-  --default-border-radius: 7px;
   border-radius: var(--default-border-radius);
 }
 

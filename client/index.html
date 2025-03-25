@@ -3,15 +3,19 @@
   <head>
     <title>Webtech 3</title>
     <link rel="stylesheet" href="/stylesheets/general.css" defer>
+    <link rel="stylesheet" href="/stylesheets/index.css" defer>
     <link rel="stylesheet" href="/stylesheets/profile_form.css" defer>
+
+    <script src="/scripts/navbar.js" type="module" defer></script>
   </head>
   <body>
     <header>
       <navbar class="navbar">
         <ul class="navbar__pages">
-          <li><a href="/index.html">Home</a></li>
-          <li><a href="/users/testuser1">Profile</a></li>
-          <li><a href="/users/testuser2/friends">Friends</a></li>
+          <li><a href="/">Home</a></li>
+          <li><a href="/users/">Profile</a></li>
+          <li><a href="/api/debug/all-users">View students table</a></li>
+          <!-- <li><a href="/users/currentUser/friends">Friends</a></li> -->
         </ul>
         
         <ul class="navbar__profile">
@@ -20,21 +24,24 @@
       </navbar>
     </header>
     <main>
-      <h1>what's poppin</h1>
-      <form class="profile-form" action="/login" method="post">
+      <h1>Welcome!</h1>
+      <form class="profile-form" action="/api/login" method="post">
         <h2 class="profile-form__title">Login</h2>
+        <p>Wachtwoord is nog niet geimplementeerd. Alleen email is nu nodig om in te loggen.</p>
         <div class="profile-form__item">
-          <label for="profile-login-form__username">Username</label>
-          <input class="profile-form__text" id="login-form__username" name="username" type="text">
+          <label for="profile-login-form__email">E-mail</label>
+          <input class="profile-form__text" id="login-form__email" name="email" type="text">
         </div>
         <div class="profile-form__item">
           <label for="profile-login-form__password">Password</label>
           <input class="profile-form__text" id="login-form__password" name="password" type="text">
         </div>
-        <input class="profile-form__submit" type="submit" value="Submit!">
+        <input class="profile-form__submit" type="submit" value="Login">
       </form>
-      <form class="profile-form" action="/register" method="post">
+
+      <form class="profile-form" action="/api/register" method="post">
         <h2 class="profile-form__title">Register</h2>
+        <p>Dit werkt nog niet.</p>
         <div class="profile-form__item">
           <label for="profile-login-form__username">Username</label>
           <input class="profile-form__text" id="login-form__username" name="username" type="text">
@@ -43,7 +50,7 @@
           <label for="profile-login-form__password">Password</label>
           <input class="profile-form__text" id="login-form__password" name="password" type="text">
         </div>
-        <input class="profile-form__submit" type="submit" value="Submit!">
+        <input class="profile-form__submit" type="submit" value="Register account">
       </form>
     </main>
   </body>
