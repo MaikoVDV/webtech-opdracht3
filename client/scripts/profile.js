@@ -27,5 +27,35 @@ async function loadProfileData() {
       textContent: friend.first_name
     }));
   });
+
+  const coursesContainer = document.querySelector("#courses-container");
+  const coursesQuery = await fetch(`/api/users/${userId}/courses`);
+  const courses = await coursesQuery.json();
+
+  courses.forEach(course => {
+    let courseItem = coursesContainer.appendChild(elementBuilder("li", {
+      class: "profile__list-item course-item"
+    }));
+    courseItem.appendChild(elementBuilder("p", {
+      class: "course-item__name",
+      textContent: course.name
+    }));
+
+    let courseDetails = courseItem.appendChild(elementBuilder("div", {
+      class: "profile__list-item--subsection",
+    }));
+    courseDetails.appendChild(elementBuilder("p", {
+      class: "course-item__description",
+      textContent: course.description
+    }));
+    courseDetails.appendChild(elementBuilder("p", {
+      class: "course-item__teacher",
+      textContent: `${course.teacher_first_name} ${course.teacher_last_name}`
+    }));
+    courseDetails.appendChild(elementBuilder("button", {
+      class: "course-item__participants-button",
+      textContent: `${course.teacher_first_name} ${course.teacher_last_name}`
+    }));
+  });
 }
 loadProfileData();

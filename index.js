@@ -1,9 +1,11 @@
-import { connectDB, initDB } from "./connect-database.js";
+import { connectDB, initDB, SqliteStore } from "./connect-database.js";
 import { loginRouteHandler, registerRouteHandler, getLoggedInUser } from "./api/account-management.js";
-import { getUser, getProfilePhoto, getFriends } from "./api/users.js";
+import { getUser, getProfilePhoto, getFriends, getCourses } from "./api/users.js";
 
+import fs from "fs";
 import express from "express";
 import session from "express-session";
+import bcrypt from "bcrypt";
 import path from "path";
 import { fileURLToPath } from "url";
 import bodyParser from "body-parser"; // For easier parsing of request bodies, like form data.
@@ -12,11 +14,21 @@ import { param, query, validationResult } from "express-validator"; // Validatin
 export const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const app = express();
 const port = 8010;
+
+// Make sure asset directories are present
+if (!fs.existsSync(path.join(__dirname, "assets"))) {
+  fs.mkdirSync(path.join(__dirname, "assets"));
+  fs.mkdirSync(path.join(__dirname, "assets/profile_pics"));
+}
+
 const sessionOptions = {
+  store: new SqliteStore({ db: "sessions.db", dir: "./assets"}), //Store sessions persitently across server restarts.
   secret: "Super secret string!!!! dont tell anyoneee",
+  resave: false,
+  saveUninitialized: false,
   cookie: {
     secure: false,
-    maxAge: 60000
+    maxAge: 1000 * 60 * 15 // 15 minutes
   }
 }
 
@@ -24,49 +36,51 @@ const sessionOptions = {
 await initDB();
 
 // Add middleware.
+app.use(express.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(session(sessionOptions));
-app.use(express.static("client"));
 
+// Necessary to send CSS and client JS. Exposes some routes like /index.js that would normally be
+// at /, but that poses no security risks and comes at no inconvenience to the end user,
+// while keeping the server-side codebase fairly clean.
+app.use(express.static("client")); 
+
+// == CLIENT ROUTES ==
 app.get("/", (req, res) => {
   res.sendFile(path.join(__dirname, "client/index.html"));
+});
+app.get("/register", (req, res) => {
+  res.sendFile(path.join(__dirname, "client/register.html"));
 });
 
 app.get("/users", async (req, res) => {
   // If logged in, redirect to own user's page.
   if (req.session.user) {
-    console.log("logged in as " + req.session.user.first_name);
     res.redirect(`/users/${req.session.user.id}`);
   } else {
     // TODO: Handle case where user visits /users but is not logged in
     console.warn("User visited /users but is not logged in!");
-    res.send("Not logged in!")
+    res.send(req.session);
+    // res.send("Not logged in!");
   }
 });
 
 app.get("/users/:id", async (req, res) => {
   res.sendFile(path.join(__dirname, "client/profile.html"));
 });
+
+// == API ROUTES --
+// User information
 app.get("/api/users/:id", getUser);
 app.get("/api/users/:id/friends", getFriends);
+app.get("/api/users/:id/courses", getCourses);
 app.get("/api/photo/:id", getProfilePhoto);
 
-
-// app.get("/api/users/:id/friends", (req, res) => {
-//   console.log("friends: " + req.params.username);
-//   res.sendFile(path.join(__dirname, "client/friends.html"));
-// });
-
+// Account logic
 app.post("/api/login", loginRouteHandler);
 app.post("/api/register", registerRouteHandler);
 app.get("/api/currentUser", getLoggedInUser);
 
-// Debug routes - ff verwijderen voor inlevering.
-app.get("/api/debug/all-users", async (req, res) => {
-  const db = await connectDB();
-  const result = await db.all("SELECT * FROM Students");
-  res.json(result);
-});
 
 app.listen(port, () => {
   console.log(`Application running on port ${port}.`);

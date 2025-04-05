@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Register</title>
+    <link rel="stylesheet" href="/stylesheets/general.css" defer>
+    <link rel="stylesheet" href="/stylesheets/index.css" defer>
+    <link rel="stylesheet" href="/stylesheets/profile_form.css" defer>
+
+    <script src="/scripts/navbar.js" type="module" defer></script>
+    <script src="/scripts/account-management.js" type="module" defer></script>
+  </head>
+  <body>
+    <header>
+      <navbar class="navbar">
+        <ul class="navbar__pages">
+          <li><a href="/">Home</a></li>
+          <li><a href="/users/">Profile</a></li>
+          <!-- <li><a href="/users/currentUser/friends">Friends</a></li> -->
+        </ul>
+        <ul class="navbar__profile">
+        </ul>
+      </navbar>
+    </header>
+    <main>
+      <!-- Form submission handled by acount-management.js -->
+      <form id="register-form" class="profile-form">
+        <h2 class="profile-form__title">Register</h2>
+        <p class="profile-form__error-message"></p>
+        <div class="profile-form__item">
+          <label for="profile-login-form__first-name">First name</label>
+          <input class="profile-form__text" id="register-form__first-name" name="first_name" type="text">
+        </div>
+        <div class="profile-form__item">
+          <label for="profile-login-form__last-name">Last name</label>
+          <input class="profile-form__text" id="register-form__last-name" name="last_name" type="text">
+        </div>
+        <div class="profile-form__item">
+          <label for="profile-login-form__age">Age</label>
+          <input class="profile-form__text" id="register-form__age" name="age" type="text">
+        </div>
+        <div class="profile-form__item">
+          <label for="profile-login-form__photo">Profile picture</label>
+          <input class="profile-form__text" id="register-form__photo" name="photo" type="file" accept="image/*">
+        </div>
+        <div class="profile-form__item">
+          <label for="profile-login-form__email">E-mail</label>
+          <input class="profile-form__text" id="register-form__email" name="email" type="text">
+        </div>
+        <div class="profile-form__item">
+          <label for="profile-login-form__password">Password</label>
+          <input class="profile-form__text" id="register-form__password" name="password" type="text">
+        </div>
+        <button class="profile-form__submit" type="submit">Register</button>
+      </form>
+    </main>
+  </body>
+</html>

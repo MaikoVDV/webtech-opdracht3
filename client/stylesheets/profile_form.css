@@ -2,10 +2,22 @@
   display: flex;
   flex-direction: column;
   gap: 0.5rem;
-  background: #FFF;
+  background-color: #FFF;
   padding: 1rem;
+  max-width: 35rem;
+  left: 50%;
+  transform: translateX(-50%);
+  position: relative;
+  margin: 2rem 0px;
 
   border-radius: var(--default-border-radius);
+}
+.profile-form__error-message {
+  margin: 0px;
+  color: red;
+}
+.profile-form__error-message:empty {
+  display: none;
 }
 
 .profile-form__title {
@@ -28,11 +40,19 @@
 }
 
 .profile-form__submit {
-  background: var(--color-confirm);
+  background-color: var(--btn-color-confirm);
+  transition: background-color 0.3s;
   border-radius: var(--default-border-radius);
-  border: 2px solid var(--color-confirm-2);
+  border: 2px solid var(--btn-color-confirm-2);
   padding: 0.5em;
 }
 .profile-form__submit:hover {
-  background: var(--color-confirm-2);
+  background-color: var(--btn-color-confirm-2);
+}
+.profile-form__subtext {
+  margin: 0px;
+}
+.profile-form__link {
+  font-weight: bold;
+  color: var(--btn-color-confirm-2);
 }

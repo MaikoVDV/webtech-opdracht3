@@ -49,3 +49,20 @@
 .profile__list-item p {
   margin: 0px;
 }
+
+.profile__list-item--subsection {
+  display: none;
+}
+.profile__list-item:hover .profile__list-item--subsection {
+  display: block;
+}
+.course-item:hover .course-item__participants-button {
+  background-color: var(--btn-color-standard);
+  transition: background-color 0.3s;
+  border-radius: var(--default-border-radius);
+  border: 2px solid var(--btn-color-standard-2);
+  padding: 0.5em;
+}
+.course-item:hover .course-item__participants-button:hover {
+  background-color: var(--btn-color-standard-2);
+}

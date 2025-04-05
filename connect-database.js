@@ -1,7 +1,10 @@
 import sqlite3 from "sqlite3";
+import session from "express-session";
+import SqliteStoreFactory from "connect-sqlite3";
 import { open } from "sqlite";
-const dbFile = "database.db";
 
+const dbFile = "database.db";
+export const SqliteStore = SqliteStoreFactory(session);
 
 // Returns a connection to the database. Connection is closed automatically when variable is garbage collected.
 export async function connectDB() {
@@ -33,6 +36,20 @@ export async function initDB() {
       second_id      INTEGER          NOT NULL,
       date_added     TEXT             DEFAULT (CURRENT_DATE),
       PRIMARY KEY (first_id, second_id) 
+      );
+
+      CREATE TABLE IF NOT EXISTS Courses (
+      id                   INTEGER          PRIMARY KEY AUTOINCREMENT,
+      name                 VARCHAR(256)     NOT NULL,
+      description          TEXT,
+      teacher_first_name   VARCHAR(32)  NOT NULL,
+      teacher_last_name    VARCHAR(32)  NOT NULL
+      );
+      
+      CREATE TABLE IF NOT EXISTS CourseParticipants (
+      course_id    INTEGER     NOT NULL,
+      student_id   INTEGER     NOT NULL, 
+      PRIMARY KEY (course_id, student_id)
       );
     `);
 }

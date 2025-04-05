@@ -1,4 +1,4 @@
-import { getLoggedInUser } from "./getLoggedinUser.js";
+import { getLoggedInUser } from "./account-management.js";
 import { elementBuilder } from "./utils.js";
 
 export const loadNavbarData = async () => {
@@ -6,8 +6,8 @@ export const loadNavbarData = async () => {
 
   const profileContainer = document.querySelector(".navbar__profile");
   profileContainer.appendChild(elementBuilder("a", {
-    href: `/users/${user.first_name}`,
-    textContent: user.first_name
+    href: `/users/${user.id}`,
+    textContent: `${user.first_name} ${user.last_name}`
   }));
 }
 

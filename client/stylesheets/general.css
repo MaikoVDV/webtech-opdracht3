@@ -4,20 +4,30 @@
 
 body {
   background: #EEE;
-  margin: 0px;
+  margin: 0px; /* Prevents margins / empty borders appearing around webpage in some browsers */
 
   font-family: "Montserrat", sans-serif;
   font-optical-sizing: auto;
   font-style: normal;
 
-  --color-confirm: #ffcd00;
-  --color-confirm-2: #ffbf00;
+  --btn-color-standard: #EEE;
+  --btn-color-standard-2: #DEDEDE;
+  --btn-color-confirm: #ffcd00;
+  --btn-color-confirm-2: #ffbf00;
   --default-border-radius: 7px;
 }
+
 
 main {
   width: 100%;
   margin: 0px auto;
+}
+
+/* Universal standard styling for buttons - often overwritten by other selectors, but is useful in avoiding unnecessary verbosity. */
+button {
+  padding: 0.5em;
+  transition: background-color 0.3s;
+  border-radius: var(--default-border-radius);
 }
 
 /* Desktop displays */

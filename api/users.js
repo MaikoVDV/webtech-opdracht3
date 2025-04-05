@@ -9,7 +9,7 @@ export const getUser = async (req, res) => {
   const { id } = req.params;
   const user = await db.get("SELECT * FROM Students WHERE id = ?", id);
 
-  res.send(user);
+  res.json(user);
 };
 
 // Operates on /api/photo/:id
@@ -25,7 +25,7 @@ export const getFriends = async (req, res) => {
   const db = await connectDB();
   const { id } = req.params;
   const user = await db.all(`
-   SELECT
+   SELECT DISTINCT
     CASE
       WHEN f.first_id = ? THEN s2.first_name
       WHEN f.second_id = ? THEN s1.first_name
@@ -38,5 +38,18 @@ export const getFriends = async (req, res) => {
     WHERE
       f.first_id = ? OR f.second_id = ?;`, 
     [id, id, id, id]);
-  res.send(user);
+  res.json(user);
+};
+
+// Operates on /api/users/:id/courses
+export const getCourses = async (req, res) => {
+  const db = await connectDB();
+  const { id } = req.params;
+  const course = await db.all(`
+    SELECT *
+    FROM Courses
+    JOIN CourseParticipants ON Courses.id=CourseParticipants.course_id
+    WHERE CourseParticipants.student_id = ?;`,
+    [id]);
+  res.json(course);
 };
