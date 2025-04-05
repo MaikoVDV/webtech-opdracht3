@@ -5,6 +5,7 @@
   flex-direction: column;
   gap: 1rem;
 }
+
 .profile__header {
   display: flex;
   flex-direction: row;
@@ -23,8 +24,159 @@
   margin: 0px;
 }
 .profile__picture {
-  max-width: 30%;
+  height: 100%;
   border-radius: var(--default-border-radius);
+}
+
+.profile__button-edit {
+  background-color: var(--btn-color-confirm);
+  border: none;
+  width: 50%;
+  margin-bottom: 0.4em;
+}
+.profile__button-edit:hover{
+  background-color: var(--btn-color-confirm-2);
+  transition: 0.3s ease-in;
+}
+
+.modal {
+  display: none;
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background-color: rgb(251, 251, 251);
+  border: none;
+  border-radius: var(--default-border-radius);
+  box-shadow: 0px 4px 8px rgba(0,0,0,0.2);
+  padding: 20px;
+  z-index: 1000;
+  width: 70%;
+  max-width: 900px;
+}
+.modal__form {
+  display: grid;
+  grid-template-columns: 1fr 2fr;
+  gap: 20px;
+  padding: 20px;
+  align-items: center;
+}
+body.modal--visible {
+  overflow: hidden;
+}
+body.modal--visible::before {
+  content: "";
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5); 
+  z-index: 999;
+}
+.modal__form label {
+  text-align: left;
+  font-weight: bold;
+}
+.modal__form small {
+  text-align: left;
+  grid-column: span 2;
+  width: 100%;
+}
+.modal__form select:not([multiple]) {
+  appearance: none; 
+  -webkit-appearance: none; 
+  -moz-appearance: none;
+}
+.modal__form textarea,
+.modal__form label,
+.modal__form input,
+.modal__form select,
+.form__checkbox-list {
+  box-sizing: border-box;
+  padding: 10px;
+  font-size: 1em;
+  border-width: 0 0 2px;
+  border-color: var(--btn-color-standard);
+  border-radius: 5px;
+  width: 100%; 
+}
+.modal__form textarea:focus,
+.modal__form input:focus,
+.modal__form select:focus {
+  outline: none;
+  border-width: 0 0 2px;
+  border-color: var(--btn-color-confirm);
+  transition: border-color 0.3s ease;
+}
+.modal__form input#photo {
+  display: none;
+}
+
+.form__button {
+  background-color: var(--btn-color-standard);
+  color: black;
+  cursor: pointer;
+  border: none;
+  text-align: center;
+  transition: background-color 0.3s ease;
+  padding: 15px;
+}
+.form__button:hover {
+  background-color: var(--btn-color-confirm-2);
+}
+.form__button#photo{
+  width: 30%;
+}
+.form__button#save,
+.form__button#cancel {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  font-size: 1em;
+  border-radius: var(--default-border-radius);
+  border: none;
+  cursor: pointer;
+}
+.form__button#cancel:hover {
+  background-color: var(--btn-color-standard-2);
+}
+
+.form__checkbox-list {
+  position: flex;
+  display: flex;
+  align-items: right;
+  flex-direction: column;
+  width: 100%;
+  z-index: 1;
+  background-color: white;
+  border-width: 0 0 2px;
+  border-color: var(--btn-color-standard);
+  border-radius: 5px;
+  max-height: 100px; 
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+.form__checkbox-list label {
+  padding: 5px;
+}
+.form__checkbox-list input {
+  position: relative;
+  bottom: 20px;
+  left: 40%;
+}
+
+.modal__button-close {
+  position: absolute;
+  top: 15px;
+  right: 20px;
+  font-size: 24px;
+  float: right;
+  color: #666;
+  cursor: pointer;
+}
+.modal__button#close:hover {
+  color: #333;
 }
 
 .profile__sec-header {
@@ -66,3 +218,24 @@
 .course-item:hover .course-item__participants-button:hover {
   background-color: var(--btn-color-standard-2);
 }
+
+.notification {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  background-color: #4caf50;
+  color: white;
+  padding: 15px 20px;
+  border-radius: 5px;
+  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+  display: none;
+  font-size: 1em;
+  animation: fadeout 3s forwards;
+}
+
+@keyframes fadeout {
+  0% { opacity: 1; }
+  90% { opacity: 1; }
+  100% { opacity: 0; }
+}
+
