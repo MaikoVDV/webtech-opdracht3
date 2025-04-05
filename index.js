@@ -1,6 +1,7 @@
 import { connectDB, initDB, SqliteStore } from "./connect-database.js";
 import { loginRouteHandler, registerRouteHandler, getLoggedInUser } from "./api/account-management.js";
 import { getUser, getProfilePhoto, getFriends, getCourses } from "./api/users.js";
+import { getChatHandler, sendMessageHandler } from "./api/chat.js";
 
 import fs from "fs";
 import express from "express";
@@ -9,7 +10,7 @@ import bcrypt from "bcrypt";
 import path from "path";
 import { fileURLToPath } from "url";
 import bodyParser from "body-parser"; // For easier parsing of request bodies, like form data.
-import { param, query, validationResult } from "express-validator"; // Validating user data and preventing XSS
+import { body, param, validationResult } from "express-validator"; // Validating user data and preventing XSS
 
 export const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const app = express();
@@ -52,6 +53,9 @@ app.get("/", (req, res) => {
 app.get("/register", (req, res) => {
   res.sendFile(path.join(__dirname, "client/register.html"));
 });
+app.get("/chat", (req, res) => {
+  res.sendFile(path.join(__dirname, "client/chat.html"));
+});
 
 app.get("/users", async (req, res) => {
   // If logged in, redirect to own user's page.
@@ -81,6 +85,12 @@ app.post("/api/login", loginRouteHandler);
 app.post("/api/register", registerRouteHandler);
 app.get("/api/currentUser", getLoggedInUser);
 
+// Chat
+app.get("/api/chat/:friend_id", getChatHandler);
+app.post("/api/send-chat/:friend_id", [
+  body("chat-input").notEmpty(),
+  param("friend_id").notEmpty()
+], sendMessageHandler);
 
 app.listen(port, () => {
   console.log(`Application running on port ${port}.`);

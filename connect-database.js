@@ -51,6 +51,25 @@ export async function initDB() {
       student_id   INTEGER     NOT NULL, 
       PRIMARY KEY (course_id, student_id)
       );
+
+      CREATE TABLE IF NOT EXISTS Conversations (
+      id          INTEGER      PRIMARY KEY AUTOINCREMENT,
+      user1_id    INTEGER      NOT NULL,
+      user2_id    INTEGER      NOT NULL,
+      FOREIGN KEY (user1_id) REFERENCES Students(id),
+      FOREIGN KEY (user2_id) REFERENCES Students(id),
+      CONSTRAINT unique_conversation UNIQUE (user1_id, user2_id)
+      );
+
+      CREATE TABLE IF NOT EXISTS Messages (
+      id          INTEGER        PRIMARY KEY AUTOINCREMENT,
+      convo_id    INTEGER        NOT NULL,
+      sender_id   INTEGER        NOT NULL,
+      content     VARCHAR(1024)  NOT NULL,
+      sent_at     DATETIME       DEFAULT CURRENT_TIMESTAMP,
+      FOREIGN KEY (convo_id) REFERENCES Conversations(id),
+      FOREIGN KEY (sender_id) REFERENCES Students(id)
+      );
     `);
 }
 

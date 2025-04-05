@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Chat</title>
+    <link rel="stylesheet" href="/stylesheets/general.css" defer>
+    <link rel="stylesheet" href="/stylesheets/chat.css" defer>
+
+    <script src="/scripts/navbar.js" type="module" defer></script>
+    <script src="/scripts/account-management.js" type="module" defer></script>
+    <script src="/scripts/chat-manager.js" type="module" defer></script>
+  </head>
+  <body>
+    <header>
+      <navbar class="navbar">
+        <ul class="navbar__pages">
+          <li><a href="/">Home</a></li>
+          <li><a href="/users">Profile</a></li>
+          <li><a href="/chat">Chat</a></li>
+          <!-- <li><a href="/users/currentUser/friends">Friends</a></li> -->
+        </ul>
+        
+        <ul class="navbar__profile">
+
+        </ul>
+      </navbar>
+    </header>
+    <main>
+      <!-- <h1>Chat!</h1> -->
+      <aside class="friends-container">
+        <h2 class="chat-section__header">Friends</h2>
+        <ul class="friends-list"></ul>
+      </aside>
+      <section class="current-chat">
+        <h2 class="chat-section__header current-chat__header">Current conversation</h2>
+        <article class="current-chat__chat-container"></article>
+        <form type="chat-input" class="current-chat__input">
+          <input type="text" class="current-chat__textbox" name="chat-input" placeholder="Type a message">
+          <button type="submit"><p>Send</p></button>
+        </form>
+      </section>
+    </main>
+  </body>
+</html>

@@ -1,0 +1,116 @@
+main {
+  display: flex;
+  flex-direction: row;
+  margin-top: 0px;
+  height: 50vh;
+}
+.chat-section__header {
+  margin: 0px;
+  padding: 1rem;
+  background-color: white;
+  border-bottom: var(--btn-color-standard-2) solid 1px;
+}
+.friends-container {
+  min-width: 25rem;
+  border-right: var(--btn-color-standard-2) solid 1px;
+}
+.friends-list {
+  display: flex;
+  flex-direction: column;
+  padding: 0px;
+  margin: 0px;
+}
+.friends-list__item {
+  list-style: none;
+  background-color: white;
+  transition: background-color 0.5s;
+  border-bottom: var(--btn-color-standard-2) solid 1px;
+  padding: 0.75rem;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 0.5rem;
+}
+.friends-list__item:hover {
+  background-color: #DEDEDE;
+}
+.friends-list__item--selected {
+  background-color: #EEEEEE;
+}
+.friends-list__name {
+  margin: 0px;
+}
+.friends-list__photo {
+  width: 3rem;
+  border-radius: 100px;
+}
+
+.current-chat {
+  flex: 1 1 0;
+  display: flex;
+  flex-direction: column;
+}
+.current-chat__chat-container {
+  display: flex;
+  flex-direction: column;
+  flex: 1 1 0;
+}
+.current-chat__message {
+  padding: 0.4rem 0.6rem;
+  margin: 0.2rem 0.5rem;
+  border-radius: var(--default-border-radius);
+  display: flex;
+  flex-direction: column;
+}
+.current-chat__message--sent {
+  margin-left: auto;
+  background: var(--btn-color-confirm);
+  border-bottom-right-radius: 0px;
+}
+.current-chat__message--received {
+  margin-right: auto;
+  background-color: white;
+  border-bottom-left-radius: 0px;
+}
+.current-chat__message p {
+  margin: 0px;
+}
+.current-chat__message-text {
+  font-size: 1.0rem;
+}
+.current-chat__message-date {
+  font-size: 0.7rem;
+  text-align: end;
+}
+.current-chat__input {
+  display: flex;
+  flex-direction: row;
+  border: var(--btn-color-standard-2);
+  border-radius: var(--default-border-radius);
+  background-color: white;
+}
+.current-chat__textbox {
+  padding: 0.7rem;
+  margin-right: 0.3rem;
+  flex: 1 1 0;
+  background: none;
+  border: none;
+}
+.current-chat__textbox:focus {
+  border-radius: var(--default-border-radius);
+}
+.current-chat__input button p {
+  margin: 0px;
+  font-family: "Montserrat", sans-serif;
+  font-size: 1rem;
+}
+.current-chat__input button {
+  padding: 0px 1.5rem;
+  border: none;
+  background-color: var(--btn-color-confirm);
+  border: var(--btn-color-confirm-2) solid 2px; 
+  transition: background-color 0.3s;
+}
+.current-chat__input button:hover {
+  background-color: var(--btn-color-confirm-2);
+}
