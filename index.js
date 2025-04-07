@@ -1,6 +1,7 @@
 import { connectDB, initDB, SqliteStore } from "./connect-database.js";
 import { loginRouteHandler, registerRouteHandler, getLoggedInUser } from "./api/account-management.js";
 import { getUser, getProfilePhoto, getFriends, getCourses } from "./api/users.js";
+import { addFriendHandler } from "./api/friends.js";
 import { getChatHandler, sendMessageHandler } from "./api/chat.js";
 
 import fs from "fs";
@@ -80,16 +81,23 @@ app.get("/api/users/:id/friends", getFriends);
 app.get("/api/users/:id/courses", getCourses);
 app.get("/api/photo/:id", getProfilePhoto);
 
+// Friends
+app.post("/api/friend-request/:target_id", [
+  param("friend_id").trim().notEmpty().isInt()
+], addFriendHandler);
+
 // Account logic
 app.post("/api/login", loginRouteHandler);
 app.post("/api/register", registerRouteHandler);
 app.get("/api/currentUser", getLoggedInUser);
 
 // Chat
-app.get("/api/chat/:friend_id", getChatHandler);
-app.post("/api/send-chat/:friend_id", [
-  body("chat-input").notEmpty(),
-  param("friend_id").notEmpty()
+app.get("/api/chat/:friend_id", [
+  param("friend_id").trim().notEmpty()
+], getChatHandler);
+app.post("/api/chat/:friend_id", [
+  body("chat-input").trim().notEmpty(), // The message content
+  param("friend_id").trim().notEmpty().isInt() // The message's recipient
 ], sendMessageHandler);
 
 app.listen(port, () => {

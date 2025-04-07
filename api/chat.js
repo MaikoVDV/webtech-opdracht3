@@ -5,9 +5,9 @@ import { validationResult } from "express-validator";
 const checkFriendshipQuery = `
     SELECT 1
     FROM Friends f
-    JOIN Students s1 ON f.first_id = s1.id
-    JOIN Students s2 ON f.second_id = s2.id
-    WHERE (f.first_id = ? AND f.second_id = ?) OR (f.first_id = ? AND f.second_id = ?);
+    JOIN Students s1 ON f.user1_id = s1.id
+    JOIN Students s2 ON f.user2_id = s2.id
+    WHERE (f.user1_id = ? AND f.user2_id = ?) OR (f.user1_id = ? AND f.user2_id = ?);
 `;
 const getConvoQuery = `
   SELECT id
@@ -18,10 +18,14 @@ const getMessagesQuery = `
   SELECT sender_id, content, sent_at
   FROM Messages
   WHERE convo_id = ?
-  ORDER BY sent_at ASC;
+  ORDER BY sent_at DESC;
 `;
 export const getChatHandler = async (req, res) => {
   if (req.session.user == null) {
+    return res.status(401).json({error: "Failed to access chat data, not logged in."});
+  }
+  const validationRes = validationResult(req);
+  if (!validationRes.isEmpty()) {
     return res.status(401).json({error: "Failed to access chat data, not logged in."});
   }
 
@@ -70,8 +74,10 @@ export const sendMessageHandler = async (req, res) => {
   if (req.session.user == null) {
     return res.status(401).json({error: "Failed to access chat data, not logged in."});
   }
-  const validationErrors = validationResult(req);
-  console.log(validationErrors.array());
+  const validationRes = validationResult(req);
+  if (!validationRes.isEmpty()) {
+    return res.status(400).json({error: "Invallid message."});
+  }
 
   try {
     const userId = req.session.user.id;

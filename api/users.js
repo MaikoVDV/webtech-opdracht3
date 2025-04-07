@@ -35,24 +35,24 @@ export const getFriends = async (req, res) => {
   const user = await db.all(`
     SELECT DISTINCT
     CASE
-      WHEN f.first_id = ? THEN s2.id
+      WHEN f.user1_id = ? THEN s2.id
       ELSE s1.id
     END AS id,
 
     CASE
-      WHEN f.first_id = ? THEN s2.first_name
+      WHEN f.user1_id = ? THEN s2.first_name
       ELSE s1.first_name
     END AS first_name,
 
     CASE
-      WHEN f.first_id = ? THEN s2.last_name
+      WHEN f.user1_id = ? THEN s2.last_name
       ELSE s1.last_name
     END AS last_name
 
     FROM Friends f
-    JOIN Students s1 ON f.first_id = s1.id
-    JOIN Students s2 ON f.second_id = s2.id
-    WHERE f.first_id = ? OR f.second_id = ?;`,
+    JOIN Students s1 ON f.user1_id = s1.id
+    JOIN Students s2 ON f.user2_id = s2.id
+    WHERE f.user1_id = ? OR f.user2_id = ?;`,
     [id, id, id, id]);
   res.json(user);
 };

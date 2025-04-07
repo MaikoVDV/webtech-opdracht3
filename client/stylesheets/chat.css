@@ -6,10 +6,19 @@ main {
 }
 .chat-section__header {
   margin: 0px;
-  padding: 1rem;
+  padding-left: 1rem;
   background-color: white;
+  transition: background-color 0.2s;
   border-bottom: var(--btn-color-standard-2) solid 1px;
+  display: flex;
+  flex-direction: row;
+  gap: 1rem;
+  align-items: center;
 }
+.chat-section__header h2 {
+  align-content: center;
+}
+
 .friends-container {
   min-width: 25rem;
   border-right: var(--btn-color-standard-2) solid 1px;
@@ -30,6 +39,7 @@ main {
   flex-direction: row;
   align-items: center;
   gap: 0.5rem;
+  cursor: pointer;
 }
 .friends-list__item:hover {
   background-color: #DEDEDE;
@@ -40,9 +50,17 @@ main {
 .friends-list__name {
   margin: 0px;
 }
+.current-chat__photo,
 .friends-list__photo {
-  width: 3rem;
+  max-height: 3rem;
   border-radius: 100px;
+}
+.current-chat__photo[src=""]{
+  display: none;
+}
+.current-chat__header--friend-selected:hover {
+  background-color: #EEE;
+  cursor: pointer;
 }
 
 .current-chat {
@@ -50,10 +68,12 @@ main {
   display: flex;
   flex-direction: column;
 }
+
 .current-chat__chat-container {
   display: flex;
-  flex-direction: column;
+  flex-direction: column-reverse;
   flex: 1 1 0;
+  overflow-y: auto;
 }
 .current-chat__message {
   padding: 0.4rem 0.6rem;
@@ -85,7 +105,6 @@ main {
 .current-chat__input {
   display: flex;
   flex-direction: row;
-  border: var(--btn-color-standard-2);
   border-radius: var(--default-border-radius);
   background-color: white;
 }
@@ -98,6 +117,7 @@ main {
 }
 .current-chat__textbox:focus {
   border-radius: var(--default-border-radius);
+  outline: var(--btn-color-standard-2) solid 2px;
 }
 .current-chat__input button p {
   margin: 0px;
@@ -113,4 +133,5 @@ main {
 }
 .current-chat__input button:hover {
   background-color: var(--btn-color-confirm-2);
+  cursor: pointer;
 }
