@@ -1,6 +1,8 @@
-import { connectDB, initDB, SqliteStore } from "./connect-database.js";
-import { loginRouteHandler, registerRouteHandler, getLoggedInUser } from "./api/account-management.js";
+import { initDB, SqliteStore } from "./connect-database.js";
+import { loginRouteHandler, registerRouteHandler, getLoggedInUser, checkLoggedIn } from "./api/account-management.js";
 import { getUser, getProfilePhoto, getFriends, getCourses } from "./api/users.js";
+import { addFriendHandler, getFriendReqsHandler, respondFriendReqHandler } from "./api/friends.js";
+import { getChatHandler, sendMessageHandler } from "./api/chat.js";
 import { updateUserInfo } from "./api/profile-management.js";
 
 import fs from "fs";
@@ -10,7 +12,7 @@ import bcrypt from "bcrypt";
 import path from "path";
 import { fileURLToPath } from "url";
 import bodyParser from "body-parser"; // For easier parsing of request bodies, like form data.
-import { param, query, validationResult } from "express-validator"; // Validating user data and preventing XSS
+import { body, check, param, validationResult } from "express-validator"; // Validating user data and preventing XSS
 
 export const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const app = express();
@@ -53,6 +55,12 @@ app.get("/", (req, res) => {
 app.get("/register", (req, res) => {
   res.sendFile(path.join(__dirname, "client/register.html"));
 });
+app.get("/chat", (req, res) => {
+  res.sendFile(path.join(__dirname, "client/chat.html"));
+});
+app.get("/friends", (req, res) => {
+  res.sendFile(path.join(__dirname, "/client/friend-requests.html"));
+});
 
 app.get("/users", async (req, res) => {
   // If logged in, redirect to own user's page.
@@ -72,17 +80,45 @@ app.get("/users/:id", async (req, res) => {
 
 // == API ROUTES --
 // User information
-app.get("/api/users/:id", getUser);
-app.get("/api/users/:id/friends", getFriends);
-app.get("/api/users/:id/courses", getCourses);
-app.get("/api/photo/:id", getProfilePhoto);
+app.get("/api/users/:id", checkLoggedIn, getUser);
+app.get("/api/users/:id/friends", checkLoggedIn, getFriends);
+app.get("/api/users/:id/courses", checkLoggedIn, getCourses);
+app.get("/api/photo/:id", [ /// TODO: ADD FRIENDSHIP / SAME COURSE CHECK
+  checkLoggedIn,
+  param("id").trim().notEmpty().isInt()
+], getProfilePhoto);
+
+// Friends
+app.post("/api/friend-requests/:target_id", [
+  checkLoggedIn,
+  param("friend_id").trim().notEmpty().isInt()
+], addFriendHandler);
+app.get("/api/friend-requests", checkLoggedIn, getFriendReqsHandler);
+app.post("/api/friend-requests/:sender_id/respond", [
+  checkLoggedIn,
+  param("sender_id").trim().notEmpty().isInt(),
+  body("action").trim().isString()
+], respondFriendReqHandler);
 
 // Account logic
-app.post("/api/login", loginRouteHandler);
+app.post("/api/login", [
+  body("email").trim().isEmail(),
+  body("password").trim().isAscii()
+], loginRouteHandler);
 app.post("/api/register", registerRouteHandler);
-app.get("/api/currentUser", getLoggedInUser);
+app.get("/api/currentUser", checkLoggedIn, getLoggedInUser);
 app.put("/api/users/:id/info", updateUserInfo);
 
+// Chat
+app.get("/api/chat/:friend_id", [
+  checkLoggedIn,
+  param("friend_id").trim().notEmpty()
+], getChatHandler);
+app.post("/api/chat/:friend_id", [
+  checkLoggedIn,
+  body("chat-input").trim().notEmpty(), // The message content
+  param("friend_id").trim().notEmpty().isInt() // The message's recipient
+], sendMessageHandler);
 
 app.listen(port, () => {
   console.log(`Application running on port ${port}.`);

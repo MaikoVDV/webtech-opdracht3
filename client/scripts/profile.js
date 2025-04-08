@@ -26,7 +26,6 @@ async function loadProfileData() {
   const friends = await friendsQuery.json();
 
   friends.forEach(friend => {
-    console.log(friend);
     let friendItem = friendsContainer.appendChild(elementBuilder("li", {
       class: "profile__list-item"
     }));

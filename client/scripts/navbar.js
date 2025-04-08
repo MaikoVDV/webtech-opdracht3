@@ -3,6 +3,7 @@ import { elementBuilder } from "./utils.js";
 
 export const loadNavbarData = async () => {
   const user = await getLoggedInUser();
+  if (!user) return;
 
   const profileContainer = document.querySelector(".navbar__profile");
   profileContainer.appendChild(elementBuilder("a", {
