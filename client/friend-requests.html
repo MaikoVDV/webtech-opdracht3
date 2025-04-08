@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Friend requests</title>
+    <link rel="stylesheet" href="/stylesheets/general.css" defer>
+    <link rel="stylesheet" href="/stylesheets/friend-requests.css" defer>
+
+    <script src="/scripts/navbar.js" type="module" defer></script>
+    <script src="/scripts/friend-requests.js" type="module" defer></script>
+  </head>
+  <body>
+    <header>
+      <navbar class="navbar">
+        <ul class="navbar__pages">
+          <li><a href="/">Home</a></li>
+          <li><a href="/users/">Profile</a></li>
+          <li><a href="/chat">Chat</a></li>
+          <li><a href="/friends">Friends</a></li>
+        </ul>
+        
+        <ul class="navbar__profile"></ul> <!-- Filled by navbar.js -->
+      </navbar>
+    </header>
+    <main>
+      <article>
+        <h2>Received friend requests</h2>
+        <ul class="friend-req-list" id="received-friend-requests-container"></ul>
+      </article>
+      <article>
+        <h2>Sent friend requests</h2>
+        <ul class="friend-req-list" id="sent-friend-requests-container"></ul>
+      </article>
+    </main>
+  </body>
+</html>

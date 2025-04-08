@@ -19,8 +19,8 @@ body {
 
 
 main {
-  width: 100%;
-  margin: 0px auto;
+  width: 97%;
+  margin: 2rem auto auto auto;
 }
 
 /* Universal standard styling for buttons - often overwritten by other selectors, but is useful in avoiding unnecessary verbosity. */
@@ -28,6 +28,12 @@ button {
   padding: 0.5em;
   transition: background-color 0.3s;
   border-radius: var(--default-border-radius);
+}
+/* Already included in body, but selector doens't apply to some paragraphs, e.g. those inside buttons. */
+p {
+  font-family: "Montserrat", sans-serif;
+  font-optical-sizing: auto;
+  font-style: normal;
 }
 
 /* Desktop displays */

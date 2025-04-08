@@ -8,7 +8,6 @@
   left: 50%;
   transform: translateX(-50%);
   position: relative;
-  margin: 2rem 0px;
 
   border-radius: var(--default-border-radius);
 }
