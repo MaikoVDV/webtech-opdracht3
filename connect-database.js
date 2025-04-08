@@ -21,12 +21,17 @@ export async function initDB() {
 
   await db.exec(`
       CREATE TABLE IF NOT EXISTS Students (
-      id             INTEGER         PRIMARY KEY AUTOINCREMENT,
-      email          VARCHAR(255)    UNIQUE NOT NULL,
-      first_name     VARCHAR(32)     NOT NULL,
-      last_name      VARCHAR(32)     NOT NULL,
-      age            INTEGER,
-      photo          VARCHAR(255) --The ID of a given photo. References photos stored in /assets/profile_pics/[ID]
+	    id             INTEGER          UNIQUE,
+	    email	         VARCHAR(255)     NOT NULL UNIQUE,
+    	first_name	   VARCHAR(32)      NOT NULL,
+	    last_name	     VARCHAR(32)      NOT NULL,
+	    age	           INTEGER,
+	    photo	         VARCHAR(255),
+	    password	     CHAR(60),
+      hobbies        TEXT,
+      program        VARCHAR(100),
+      courses        TEXT,
+	    PRIMARY        KEY(id AUTOINCREMENT)
       );
 
       CREATE UNIQUE INDEX IF NOT EXISTS idx_Students_email ON Students(email);
@@ -54,7 +59,7 @@ export async function initDB() {
     `);
 }
 
-// export async function connectDB() { 
+// export async function connectDB() {
 //   if (dbInstance) {
 //     console.log("dbInstance exists.");
 //     return dbInstance;

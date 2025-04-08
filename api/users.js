@@ -17,7 +17,8 @@ export const getProfilePhoto = async (req, res) => {
   const db = await connectDB();
   const { id } = req.params;
   let pictureQuery = await db.get(`SELECT photo FROM Students WHERE id = ?`, id);
-  res.sendFile(path.join(__dirname, `assets/profile_pics/${pictureQuery.photo}`));
+
+  res.sendFile(path.join(__dirname, `assets/profile_pics/${pictureQuery.photo ? pictureQuery.photo : "default.png"}`));
 }
 
 // Operates on /api/users/:id/friends
@@ -36,7 +37,7 @@ export const getFriends = async (req, res) => {
     JOIN
       Students s2 ON f.second_id = s2.id
     WHERE
-      f.first_id = ? OR f.second_id = ?;`, 
+      f.first_id = ? OR f.second_id = ?;`,
     [id, id, id, id]);
   res.json(user);
 };

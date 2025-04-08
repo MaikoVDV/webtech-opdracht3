@@ -41,9 +41,12 @@
         <label for="age">Age:</label>
         <input type="number" id="age" value="20" min="1" required>
 
-        <label for="photo">Profile picture:</label>
-        <button type="button" class="form__button" id="photo">Upload Photo</button>
-        <input type="file" id="photo" accept="image/*">
+        <label for="input-photo">Profile picture:</label>
+        <section>
+          <button type="button" class="form__button" id="photo">Upload Photo</button>
+          <img class="form__photo-preview" src="" alt="Selected Photo">
+        </section>
+        <input type="file" id="input-photo" accept="image/*">
 
         <label for="hobbies">Hobbies:</label>
         <input type="text" id="hobbies">

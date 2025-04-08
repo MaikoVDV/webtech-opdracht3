@@ -9,7 +9,7 @@ export function closeEditModal() {
 }
 
 export function onPhotoButtonClick() {
-  document.querySelector(".modal__form input#photo").click();
+  document.querySelector(".modal__form input#input-photo").click();
 }
 
 export async function saveChanges() {
@@ -19,7 +19,7 @@ export async function saveChanges() {
   const lastName = document.querySelector(".modal__form input#last-name").value.trim();
   const email = document.querySelector(".modal__form input#email").value.trim();
   const age = parseInt(document.querySelector(".modal__form input#age").value.trim(), 10);
-  const photo = document.querySelector(".modal__form input#photo").files[0];
+  const photo = document.querySelector(".modal__form input#input-photo").files[0];
   const hobbies = document.querySelector(".modal__form input#hobbies").value.trim();
   const program = document.querySelector(".modal__form select#program").value;
   const courses = Array.from(document.querySelectorAll(".modal__form .form__checkbox-list input:checked")).map(
@@ -39,29 +39,41 @@ export async function saveChanges() {
     return;
   };
 
-  console.log("Saved details:", { firstName, lastName, email, age, program, hobbies, courses });
-  console.log("Photo:", photo ? photo.name : "No photo uploaded");
-
   const body = {
     firstName: firstName,
     lastName: lastName,
     email: email,
     age: age,
     photo: photo ? photo.name : null,
-    hobbies: hobbies,
-    program: program,
-    courses: courses.join(", ")
+    hobbies: hobbies ? hobbies : null,
+    program: program ? program : null,
+    courses: courses ? courses.join(", ") : null
   };
 
-  const response = await fetch(`/api/users/${userId}/info`, {
+  await fetch(`/api/users/${userId}/info`, {
     method: "PUT",
-    body: body
+    headers: { "Content-type": "application/json" },
+    body: JSON.stringify(body)
   });
-  const responseObj = await response.json();
-  console.log(responseObj);
 
   closeEditModal();
   showNotification("Changes saved successfully. Reload the page to see the updated profile.", "success");
+};
+
+export function displayDataInModalFields(user) {
+
+};
+
+export function onModalPhotoChange(input) {
+  const file = input.target.files[0];
+  if (file) {
+    const reader = new FileReader();
+    reader.onload = function (e) {
+      const preview = document.querySelector(".form__photo-preview");
+      preview.src = e.target.result;
+    };
+    reader.readAsDataURL(file);
+  };
 };
 
 function validateEmail(email) {
