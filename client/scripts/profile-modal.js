@@ -12,15 +12,17 @@ export function onPhotoButtonClick() {
   document.querySelector(".modal__form input#photo").click();
 }
 
-export function saveChanges() {
-  const firstName = document.getElementById("first-name").value.trim();
-  const lastName = document.getElementById("last-name").value.trim();
-  const email = document.getElementById("email").value.trim();
-  const age = parseInt(document.getElementById("age").value.trim(), 10);
-  const photo = document.getElementById("photo").files[0]; // Get the selected file
-  const program = document.getElementById("program").value;
-  const hobbies = document.getElementById("hobbies").value.trim();
-  const courses = Array.from(document.querySelectorAll('input[name="courses"]:checked')).map(
+export async function saveChanges() {
+  const userId = window.location.pathname.split('/').pop(); // Get username from URL
+
+  const firstName = document.querySelector(".modal__form input#first-name").value.trim();
+  const lastName = document.querySelector(".modal__form input#last-name").value.trim();
+  const email = document.querySelector(".modal__form input#email").value.trim();
+  const age = parseInt(document.querySelector(".modal__form input#age").value.trim(), 10);
+  const photo = document.querySelector(".modal__form input#photo").files[0];
+  const hobbies = document.querySelector(".modal__form input#hobbies").value.trim();
+  const program = document.querySelector(".modal__form select#program").value;
+  const courses = Array.from(document.querySelectorAll(".modal__form .form__checkbox-list input:checked")).map(
     checkbox => checkbox.value
   );
 
@@ -39,6 +41,24 @@ export function saveChanges() {
 
   console.log("Saved details:", { firstName, lastName, email, age, program, hobbies, courses });
   console.log("Photo:", photo ? photo.name : "No photo uploaded");
+
+  const body = {
+    firstName: firstName,
+    lastName: lastName,
+    email: email,
+    age: age,
+    photo: photo ? photo.name : null,
+    hobbies: hobbies,
+    program: program,
+    courses: courses.join(", ")
+  };
+
+  const response = await fetch(`/api/users/${userId}/info`, {
+    method: "PUT",
+    body: body
+  });
+  const responseObj = await response.json();
+  console.log(responseObj);
 
   closeEditModal();
   showNotification("Changes saved successfully. Reload the page to see the updated profile.", "success");

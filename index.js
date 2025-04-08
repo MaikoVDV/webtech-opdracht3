@@ -1,6 +1,7 @@
 import { connectDB, initDB, SqliteStore } from "./connect-database.js";
 import { loginRouteHandler, registerRouteHandler, getLoggedInUser } from "./api/account-management.js";
 import { getUser, getProfilePhoto, getFriends, getCourses } from "./api/users.js";
+import { updateUserInfo } from "./api/profile-management.js";
 
 import fs from "fs";
 import express from "express";
@@ -22,7 +23,7 @@ if (!fs.existsSync(path.join(__dirname, "assets"))) {
 }
 
 const sessionOptions = {
-  store: new SqliteStore({ db: "sessions.db", dir: "./assets"}), //Store sessions persitently across server restarts.
+  store: new SqliteStore({ db: "sessions.db", dir: "./assets" }), //Store sessions persitently across server restarts.
   secret: "Super secret string!!!! dont tell anyoneee",
   resave: false,
   saveUninitialized: false,
@@ -43,7 +44,7 @@ app.use(session(sessionOptions));
 // Necessary to send CSS and client JS. Exposes some routes like /index.js that would normally be
 // at /, but that poses no security risks and comes at no inconvenience to the end user,
 // while keeping the server-side codebase fairly clean.
-app.use(express.static("client")); 
+app.use(express.static("client"));
 
 // == CLIENT ROUTES ==
 app.get("/", (req, res) => {
@@ -80,6 +81,7 @@ app.get("/api/photo/:id", getProfilePhoto);
 app.post("/api/login", loginRouteHandler);
 app.post("/api/register", registerRouteHandler);
 app.get("/api/currentUser", getLoggedInUser);
+app.put("/api/users/:id/info", updateUserInfo);
 
 
 app.listen(port, () => {

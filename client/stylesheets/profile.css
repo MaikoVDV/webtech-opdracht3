@@ -72,7 +72,7 @@ body.modal--visible::before {
   width: 100%;
   height: 100%;
   background-color: rgba(0, 0, 0, 0.5); 
-  z-index: 999;
+  z-index: 998;
 }
 .modal__form label {
   text-align: left;
@@ -231,6 +231,7 @@ body.modal--visible::before {
   display: none;
   font-size: 1em;
   animation: fadeout 3s forwards;
+  z-index: 999;
 }
 
 @keyframes fadeout {
@@ -239,3 +240,6 @@ body.modal--visible::before {
   100% { opacity: 0; }
 }
 
+.modal__form .form__checkbox-list input {
+
+}
