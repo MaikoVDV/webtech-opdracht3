@@ -21,9 +21,6 @@ const getMessagesQuery = `
   ORDER BY sent_at DESC;
 `;
 export const getChatHandler = async (req, res) => {
-  if (req.session.user == null) {
-    return res.status(401).json({error: "Failed to access chat data, not logged in."});
-  }
   const validationRes = validationResult(req);
   if (!validationRes.isEmpty()) {
     return res.status(401).json({error: "Failed to access chat data, not logged in."});
@@ -71,9 +68,6 @@ const sendMessageQuery = `
   VALUES (?, ?, ?);
 `;
 export const sendMessageHandler = async (req, res) => {
-  if (req.session.user == null) {
-    return res.status(401).json({error: "Failed to access chat data, not logged in."});
-  }
   const validationRes = validationResult(req);
   if (!validationRes.isEmpty()) {
     return res.status(400).json({error: "Invallid message."});

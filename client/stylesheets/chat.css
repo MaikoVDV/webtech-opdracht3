@@ -3,6 +3,7 @@ main {
   flex-direction: row;
   margin-top: 0px;
   height: 50vh;
+  width: 100% !important;
 }
 .chat-section__header {
   margin: 0px;

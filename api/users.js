@@ -1,4 +1,5 @@
 import path from "path";
+import { validationResult } from "express-validator"; // Validating user data and preventing XSS
 
 import { __dirname } from "../index.js";
 import { connectDB } from "../connect-database.js";
@@ -22,17 +23,28 @@ export const getUser = async (req, res) => {
 
 // Operates on /api/photo/:id
 export const getProfilePhoto = async (req, res) => {
-  const db = await connectDB();
-  const { id } = req.params;
-  let pictureQuery = await db.get(`SELECT photo FROM Students WHERE id = ?`, id);
-  res.sendFile(path.join(__dirname, `assets/profile_pics/${pictureQuery.photo}`));
+  const validationRes = validationResult(req);
+  if (!validationRes.isEmpty()) {
+    console.log(validationRes);
+    return res.status(400).json({error: "Failed to access profile photo, invalid student id given."});
+  }
+
+  try {
+    const db = await connectDB();
+    const { id } = req.params;
+    let pictureQuery = await db.get(`SELECT photo FROM Students WHERE id = ?`, id);
+    console.log(id);
+    res.sendFile(path.join(__dirname, `assets/profile_pics/${pictureQuery.photo}`));
+  } catch (e) {
+    console.error(`Failed to serve profile photo: ${e}`);
+  }
 }
 
 // Operates on /api/users/:id/friends
 export const getFriends = async (req, res) => {
   const db = await connectDB();
   const { id } = req.params;
-  const user = await db.all(`
+  const friends = await db.all(`
     SELECT DISTINCT
     CASE
       WHEN f.user1_id = ? THEN s2.id
@@ -54,7 +66,7 @@ export const getFriends = async (req, res) => {
     JOIN Students s2 ON f.user2_id = s2.id
     WHERE f.user1_id = ? OR f.user2_id = ?;`,
     [id, id, id, id]);
-  res.json(user);
+  res.json(friends);
 };
 
 // Operates on /api/users/:id/courses
