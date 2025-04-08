@@ -24,14 +24,15 @@
   margin: 0px;
 }
 .profile__picture {
-  height: 100%;
+  height: 100px;
+  width: auto;
   border-radius: var(--default-border-radius);
 }
 
 .profile__button-edit {
   background-color: var(--btn-color-confirm);
   border: none;
-  width: 50%;
+  width: 35%;
   margin-bottom: 0.4em;
 }
 .profile__button-edit:hover{
@@ -109,7 +110,12 @@ body.modal--visible::before {
   border-color: var(--btn-color-confirm);
   transition: border-color 0.3s ease;
 }
-.modal__form input#photo {
+.modal__form section {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.modal__form input#input-photo {
   display: none;
 }
 
@@ -125,7 +131,7 @@ body.modal--visible::before {
 .form__button:hover {
   background-color: var(--btn-color-confirm-2);
 }
-.form__button#photo{
+.form__button#photo {
   width: 30%;
 }
 .form__button#save,
@@ -141,6 +147,13 @@ body.modal--visible::before {
 .form__button#cancel:hover {
   background-color: var(--btn-color-standard-2);
 }
+
+.form__photo-preview {
+  border-radius: var(--default-border-radius);
+  max-height: 45px;
+  width: auto;
+}
+
 
 .form__checkbox-list {
   position: flex;
@@ -238,8 +251,4 @@ body.modal--visible::before {
   0% { opacity: 1; }
   90% { opacity: 1; }
   100% { opacity: 0; }
-}
-
-.modal__form .form__checkbox-list input {
-
 }

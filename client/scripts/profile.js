@@ -1,10 +1,22 @@
 import { elementBuilder } from "./utils.js";
-import { openEditModal, closeEditModal, saveChanges, onPhotoButtonClick } from "./profile-modal.js";
+import { openEditModal, closeEditModal, saveChanges, onPhotoButtonClick, onModalPhotoChange, displayDataInModalFields } from "./profile-modal.js";
+import { getLoggedInUser } from "./account-management.js";
 
 async function loadProfileData() {
   const userId = window.location.pathname.split('/').pop(); // Get username from URL
   const response = await fetch(`/api/users/${userId}`);
   const user = await response.json();
+
+  const loggedInUser = await getLoggedInUser();
+  if (!loggedInUser) return;
+
+  console.log(userId, loggedInUser.id);
+
+  if (userId != loggedInUser.id) {
+    console.log("hi");
+    const profileEditButton = document.querySelector(".profile__button-edit");
+    profileEditButton.style.display = "none";
+  };
 
   const nameHeader = document.querySelector(".profile__fullname");
   nameHeader.textContent = `${user.first_name} ${user.last_name}`;
@@ -15,11 +27,15 @@ async function loadProfileData() {
   const pictureDisplay = document.querySelector(".profile__picture");
   pictureDisplay.src = `/api/photo/${userId}`;
 
+  displayDataInModalFields(user);
+
   document.querySelector(".profile__button-edit").addEventListener("click", openEditModal);
   document.querySelector(".modal__button-close").addEventListener("click", closeEditModal);
   document.querySelector(".form__button#cancel").addEventListener("click", closeEditModal);
+  document.querySelector("#input-photo").addEventListener("change", onModalPhotoChange);
   document.querySelector(".form__button#save").addEventListener("click", saveChanges);
   document.querySelector(".form__button").addEventListener("click", onPhotoButtonClick);
+
 
   const friendsContainer = document.querySelector("#friends-container");
   const friendsQuery = await fetch(`/api/users/${userId}/friends`);

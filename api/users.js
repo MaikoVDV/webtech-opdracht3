@@ -6,7 +6,7 @@ import { connectDB } from "../connect-database.js";
 
 // Operates on /api/users/:id
 const userQuery = `
-  SELECT id, email, first_name, last_name, age, photo
+  SELECT id, email, first_name, last_name, age, photo, hobbies, program, courses
   FROM Students
   WHERE id = ?;
 `;
@@ -15,7 +15,7 @@ export const getUser = async (req, res) => {
   const { id } = req.params;
   const user = await db.get(userQuery, id);
   if (!user) {
-    return res.status(404).json({error: "Couldn't find user."});
+    return res.status(404).json({ error: "Couldn't find user." });
   }
 
   res.json(user);
@@ -25,14 +25,14 @@ export const getUser = async (req, res) => {
 export const getProfilePhoto = async (req, res) => {
   const validationRes = validationResult(req);
   if (!validationRes.isEmpty()) {
-    return res.status(400).json({error: "Failed to access profile photo, invalid student id given."});
+    return res.status(400).json({ error: "Failed to access profile photo, invalid student id given." });
   }
 
   try {
     const db = await connectDB();
     const { id } = req.params;
     let pictureQuery = await db.get(`SELECT photo FROM Students WHERE id = ?`, id);
-    res.sendFile(path.join(__dirname, `assets/profile_pics/${pictureQuery.photo}`));
+    res.sendFile(path.join(__dirname, `assets/profile_pics/${pictureQuery.photo ? pictureQuery.photo : "default.png"}`));
   } catch (e) {
     console.error(`Failed to serve profile photo: ${e}`);
   }

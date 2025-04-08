@@ -13,11 +13,11 @@ export async function updateUserInfo(req, res) {
   WHERE id = ?;
   `;
 
-  const userData = await db.all(query, values).catch((error) => {
+  await db.run(query, values).catch((error) => {
     console.log(error);
     res.status(500).json({ error: "Failed to update user information." });
     return;
   });
 
-  res.json(userData);
+  res.status(200).json({ message: "User information updated successfully." });
 }

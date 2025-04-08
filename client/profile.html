@@ -15,10 +15,10 @@
   <header>
     <navbar class="navbar">
       <ul class="navbar__pages">
-          <li><a href="/">Home</a></li>
-          <li><a href="/users/">Profile</a></li>
-          <li><a href="/chat">Chat</a></li>
-          <li><a href="/friends">Friends</a></li>
+        <li><a href="/">Home</a></li>
+        <li><a href="/users/">Profile</a></li>
+        <li><a href="/chat">Chat</a></li>
+        <li><a href="/friends">Friends</a></li>
       </ul>
 
       <ul class="navbar__profile"></ul> <!-- Filled by navbar.js -->
@@ -31,20 +31,23 @@
       <h2>Edit profile</h2>
       <form class="modal__form">
         <label for="first-name">First name:</label>
-        <input type="text" id="first-name" value="Bessel" required>
+        <input type="text" id="first-name" required>
 
         <label for="last-name">Last name:</label>
-        <input type="text" id="last-name" value="Withoos" required>
+        <input type="text" id="last-name" required>
 
         <label for="email">Email address:</label>
-        <input type="email" id="email" value="bessel@gmail.com" required>
+        <input type="email" id="email" required>
 
         <label for="age">Age:</label>
-        <input type="number" id="age" value="20" min="1" required>
+        <input type="number" id="age" min="1" required>
 
-        <label for="photo">Profile picture:</label>
-        <button type="button" class="form__button" id="photo">Upload Photo</button>
-        <input type="file" id="photo" accept="image/*">
+        <label for="input-photo">Profile picture:</label>
+        <section>
+          <button type="button" class="form__button" id="photo">Upload Photo</button>
+          <img class="form__photo-preview" src="" alt="Selected Photo">
+        </section>
+        <input type="file" id="input-photo" accept="image/*">
 
         <label for="hobbies">Hobbies:</label>
         <input type="text" id="hobbies">
@@ -57,39 +60,39 @@
           <option value="arts">Arts</option>
         </select>
 
-        <label for="courses">Courses:</label>
+        <label>Courses:</label>
         <div class="form__checkbox-list">
           <label class="form__checkbox-label">
             Web Technology
-            <input type="checkbox" id="0" value="web-tech">
+            <input type="checkbox" value="web-tech">
           </label>
           <label class="form__checkbox-label">
             Databases
-            <input type="checkbox" id="1" value="databases">
+            <input type="checkbox" value="databases">
           </label>
           <label class="form__checkbox-label">
             Logic
-            <input type="checkbox" id="2" value="logic">
+            <input type="checkbox" value="logic">
           </label>
           <label class="form__checkbox-label">
             Imperative Programming
-            <input type="checkbox" id="3" value="programming">
+            <input type="checkbox" value="programming">
           </label>
           <label class="form__checkbox-label">
             Computer Architecture & Networks
-            <input type="checkbox" id="4" value="comp-arch">
+            <input type="checkbox" value="comp-arch">
           </label>
           <label class="form__checkbox-label">
             Computer Science Introduction Project
-            <input type="checkbox" id="5" value="inca-intro">
+            <input type="checkbox" value="inca-intro">
           </label>
           <label class="form__checkbox-label">
             Datastructures
-            <input type="checkbox" id="6" value="datastruc">
+            <input type="checkbox" value="datastruc">
           </label>
           <label class="form__checkbox-label">
             Graphics
-            <input type="checkbox" id="7" value="graphics">
+            <input type="checkbox" value="graphics">
           </label>
         </div>
 
