@@ -39,8 +39,8 @@ export async function initDB() {
       );
 
       CREATE TABLE IF NOT EXISTS FriendRequests (
-      user1_id       INTEGER          NOT NULL,
-      user2_id       INTEGER          NOT NULL,
+      sender_id      INTEGER          NOT NULL,
+      target_id      INTEGER          NOT NULL,
       status         VARCHAR(32)      DEFAULT 'pending',
       PRIMARY KEY (user1_id, user2_id),
       FOREIGN KEY (user1_id) REFERENCES Students(id),

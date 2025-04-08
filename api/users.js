@@ -25,7 +25,6 @@ export const getUser = async (req, res) => {
 export const getProfilePhoto = async (req, res) => {
   const validationRes = validationResult(req);
   if (!validationRes.isEmpty()) {
-    console.log(validationRes);
     return res.status(400).json({error: "Failed to access profile photo, invalid student id given."});
   }
 
@@ -33,7 +32,6 @@ export const getProfilePhoto = async (req, res) => {
     const db = await connectDB();
     const { id } = req.params;
     let pictureQuery = await db.get(`SELECT photo FROM Students WHERE id = ?`, id);
-    console.log(id);
     res.sendFile(path.join(__dirname, `assets/profile_pics/${pictureQuery.photo}`));
   } catch (e) {
     console.error(`Failed to serve profile photo: ${e}`);
@@ -65,8 +63,9 @@ export const getFriends = async (req, res) => {
     JOIN Students s1 ON f.user1_id = s1.id
     JOIN Students s2 ON f.user2_id = s2.id
     WHERE f.user1_id = ? OR f.user2_id = ?;`,
-    [id, id, id, id]);
-  res.json(friends);
+    [id, id, id, id, id]);
+
+  return res.status(200).json(friends);
 };
 
 // Operates on /api/users/:id/courses

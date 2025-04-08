@@ -2,6 +2,9 @@
   padding-left: 0px;
   margin: 0px;
   list-style: none;
+  gap: 0.8rem;
+  display: flex;
+  flex-direction: column;
 }
 .friend-req-list__item {
   display: flex;

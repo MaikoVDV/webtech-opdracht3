@@ -1,7 +1,7 @@
 import { initDB, SqliteStore } from "./connect-database.js";
 import { loginRouteHandler, registerRouteHandler, getLoggedInUser, checkLoggedIn } from "./api/account-management.js";
 import { getUser, getProfilePhoto, getFriends, getCourses } from "./api/users.js";
-import { addFriendHandler, getFriendReqsHandler } from "./api/friends.js";
+import { addFriendHandler, getFriendReqsHandler, respondFriendReqHandler } from "./api/friends.js";
 import { getChatHandler, sendMessageHandler } from "./api/chat.js";
 
 import fs from "fs";
@@ -93,6 +93,11 @@ app.post("/api/friend-requests/:target_id", [
   param("friend_id").trim().notEmpty().isInt()
 ], addFriendHandler);
 app.get("/api/friend-requests", checkLoggedIn, getFriendReqsHandler);
+app.post("/api/friend-requests/:sender_id/respond", [
+  checkLoggedIn,
+  param("sender_id").trim().notEmpty().isInt(),
+  body("action").trim().isString()
+], respondFriendReqHandler);
 
 // Account logic
 app.post("/api/login", [
