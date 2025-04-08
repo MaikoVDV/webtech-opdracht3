@@ -29,9 +29,6 @@ export const loginRouteHandler = async (req, res) => {
   if (user) {
     // Compare passwords
     if (await bcrypt.compare(password, user.password)) {
-      // Correct password entered!
-      console.log("Correct password entered!");
-
       req.session.user = {
         id: user.id,
         email: user.email,
@@ -106,7 +103,7 @@ export const registerRouteHandler = async (req, res) => {
 
       res.status(200).send();
     } catch (exception) {
-      console.log(exception);
+      console.error(exception);
       res.status(500).json({error: "Failed to register account."});
     }
   })
@@ -121,15 +118,17 @@ FROM Students
 WHERE id = ?;
 `
 export const getLoggedInUser = async (req, res) => {
-  if (req.session.user) {
-    const db = await connectDB();
-    // Querying user to not have to store entire user row in req.session and 
-    // to maintain a single source of data (instead of req.session AND the database.)
-    const user = await db.get(getUserByIdQuery, req.session.user.id);
-    res.json(user);
-  } else {
-    res.status(401).json({ error: "Not logged in!"});
-  }
+  const db = await connectDB();
+  // Querying user to not have to store entire user row in req.session and 
+  // to maintain a single source of data (instead of req.session AND the database.)
+  const user = await db.get(getUserByIdQuery, req.session.user.id);
+  res.json(user);
 }
 
-export default { loginRouteHandler, registerRouteHandler };
+// Middleware to protect routes that should only be accessible for logged-in users.
+export const checkLoggedIn = (req, res, next) => {
+  if (req.session && req.session.user) {
+    return next();
+  }
+  return res.status(401).json({error: "Failed to process request, not logged in."});
+}

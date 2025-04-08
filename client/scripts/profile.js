@@ -1,4 +1,5 @@
 import { elementBuilder } from "./utils.js";
+import { openEditModal, closeEditModal, saveChanges, onPhotoButtonClick } from "./profile-modal.js";
 
 async function loadProfileData() {
   const userId = window.location.pathname.split('/').pop(); // Get username from URL
@@ -14,12 +15,17 @@ async function loadProfileData() {
   const pictureDisplay = document.querySelector(".profile__picture");
   pictureDisplay.src = `/api/photo/${userId}`;
 
+  document.querySelector(".profile__button-edit").addEventListener("click", openEditModal);
+  document.querySelector(".modal__button-close").addEventListener("click", closeEditModal);
+  document.querySelector(".form__button#cancel").addEventListener("click", closeEditModal);
+  document.querySelector(".form__button#save").addEventListener("click", saveChanges);
+  document.querySelector(".form__button").addEventListener("click", onPhotoButtonClick);
+
   const friendsContainer = document.querySelector("#friends-container");
   const friendsQuery = await fetch(`/api/users/${userId}/friends`);
   const friends = await friendsQuery.json();
 
   friends.forEach(friend => {
-    console.log(friend);
     let friendItem = friendsContainer.appendChild(elementBuilder("li", {
       class: "profile__list-item"
     }));

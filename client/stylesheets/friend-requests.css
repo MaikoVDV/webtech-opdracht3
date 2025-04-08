@@ -1,0 +1,42 @@
+.friend-req-list {
+  padding-left: 0px;
+  margin: 0px;
+  list-style: none;
+  gap: 0.8rem;
+  display: flex;
+  flex-direction: column;
+}
+.friend-req-list__item {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  background-color: white;
+  align-items: center;
+  padding: 0.5rem;
+  border-radius: var(--default-border-radius);
+}
+.friend-req-list__item div {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 0.5rem;
+}
+.friend-req-list__student-name {
+  font-size: 1.5rem;
+}
+.friend-req-list__item p {
+  margin: 0px;
+}
+.friend-req-list__item button {
+  background-color: var(--btn-color-standard);
+  border: var(--btn-color-standard-2) solid 2px;
+  transition: background-color 0.2s;
+  padding: 0.8em 1.8em;
+}
+.friend-req-list__item button:hover {
+  background-color: var(--btn-color-standard-2);
+}
+.friend-req-list__item img {
+  border-radius: 100px;
+  height: 3rem;
+}

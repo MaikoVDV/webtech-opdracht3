@@ -5,8 +5,10 @@ export const getLoggedInUser = async () => {
   }
   const response = await fetch(`/api/currentUser`);
   const user = await response.json();
-  if (user) {
+  if (response.ok) {
     loggedInUserData = user;
+  } else {
+    return null;
   }
   return loggedInUserData;
 }

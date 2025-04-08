@@ -26,16 +26,26 @@ export async function initDB() {
       first_name     VARCHAR(32)     NOT NULL,
       last_name      VARCHAR(32)     NOT NULL,
       age            INTEGER,
-      photo          VARCHAR(255) --The ID of a given photo. References photos stored in /assets/profile_pics/[ID]
+      photo          VARCHAR(255) --The name/id of a given photo. References photos stored in /assets/profile_pics/[ID]
       );
 
       CREATE UNIQUE INDEX IF NOT EXISTS idx_Students_email ON Students(email);
 
       CREATE TABLE IF NOT EXISTS Friends (
-      first_id       INTEGER          NOT NULL,
-      second_id      INTEGER          NOT NULL,
+      user1_id       INTEGER          NOT NULL,
+      user2_id       INTEGER          NOT NULL,
       date_added     TEXT             DEFAULT (CURRENT_DATE),
-      PRIMARY KEY (first_id, second_id) 
+      PRIMARY KEY (user1_id, user2_id) 
+      );
+
+      CREATE TABLE IF NOT EXISTS FriendRequests (
+      sender_id      INTEGER          NOT NULL,
+      target_id      INTEGER          NOT NULL,
+      status         VARCHAR(32)      DEFAULT 'pending',
+      PRIMARY KEY (user1_id, user2_id),
+      FOREIGN KEY (user1_id) REFERENCES Students(id),
+      FOREIGN KEY (user2_id) REFERENCES Students(id),
+      CHECK (status IN ('pending', 'accepted', 'rejected'))
       );
 
       CREATE TABLE IF NOT EXISTS Courses (
@@ -50,6 +60,25 @@ export async function initDB() {
       course_id    INTEGER     NOT NULL,
       student_id   INTEGER     NOT NULL, 
       PRIMARY KEY (course_id, student_id)
+      );
+
+      CREATE TABLE IF NOT EXISTS Conversations (
+      id          INTEGER      PRIMARY KEY AUTOINCREMENT,
+      user1_id    INTEGER      NOT NULL,
+      user2_id    INTEGER      NOT NULL,
+      FOREIGN KEY (user1_id) REFERENCES Students(id),
+      FOREIGN KEY (user2_id) REFERENCES Students(id),
+      CONSTRAINT unique_conversation UNIQUE (user1_id, user2_id)
+      );
+
+      CREATE TABLE IF NOT EXISTS Messages (
+      id          INTEGER        PRIMARY KEY AUTOINCREMENT,
+      convo_id    INTEGER        NOT NULL,
+      sender_id   INTEGER        NOT NULL,
+      content     VARCHAR(1024)  NOT NULL,
+      sent_at     DATETIME       DEFAULT CURRENT_TIMESTAMP,
+      FOREIGN KEY (convo_id) REFERENCES Conversations(id),
+      FOREIGN KEY (sender_id) REFERENCES Students(id)
       );
     `);
 }
