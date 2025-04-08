@@ -150,8 +150,7 @@ body.modal--visible::before {
 
 .form__photo-preview {
   border-radius: var(--default-border-radius);
-  max-width: 100px;
-  height: 10%;
+  max-height: 45px;
   width: auto;
 }
 
