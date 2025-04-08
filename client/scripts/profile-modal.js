@@ -13,55 +13,78 @@ export function onPhotoButtonClick() {
 }
 
 export async function saveChanges() {
-  const userId = window.location.pathname.split('/').pop(); // Get username from URL
+  const userId = window.location.pathname.split('/').pop();
+  const response = await fetch(`/api/users/${userId}`);
+  const user = await response.json();
 
-  const firstName = document.querySelector(".modal__form input#first-name").value.trim();
-  const lastName = document.querySelector(".modal__form input#last-name").value.trim();
-  const email = document.querySelector(".modal__form input#email").value.trim();
-  const age = parseInt(document.querySelector(".modal__form input#age").value.trim(), 10);
-  const photo = document.querySelector(".modal__form input#input-photo").files[0];
-  const hobbies = document.querySelector(".modal__form input#hobbies").value.trim();
-  const program = document.querySelector(".modal__form select#program").value;
-  const courses = Array.from(document.querySelectorAll(".modal__form .form__checkbox-list input:checked")).map(
-    checkbox => checkbox.value
-  );
+  const form = document.querySelector(".modal__form");
 
-  if (!firstName || !lastName) {
-    showNotification("First and last names cannot be empty.", "error");
-    return;
-  };
-  if (!validateEmail(email)) {
-    showNotification("Please enter a valid email address.", "error");
-    return;
-  };
-  if (!age || age <= 0) {
-    showNotification("Please enter a valid age greater than 0.", "error");
-    return;
-  };
+  const firstName = form.querySelector("#first-name").value.trim();
+  const lastName = form.querySelector("#last-name").value.trim();
+  const email = form.querySelector("#email").value.trim();
+  const age = parseInt(form.querySelector("#age").value.trim(), 10);
+  const photo = form.querySelector("#input-photo").files[0];
+  const hobbies = form.querySelector("#hobbies").value.trim();
+  const program = form.querySelector("#program").value;
+  const courses = Array.from(form.querySelectorAll(".form__checkbox-list input:checked"))
+    .map(checkbox => checkbox.value);
+
+  if (!firstName || !lastName) return showNotification("First and last names cannot be empty.", "error");
+  if (!validateEmail(email)) return showNotification("Please enter a valid email address.", "error");
+  if (!age || age <= 0) return showNotification("Please enter a valid age greater than 0.", "error");
 
   const body = {
-    firstName: firstName,
-    lastName: lastName,
-    email: email,
-    age: age,
-    photo: photo ? photo.name : null,
-    hobbies: hobbies ? hobbies : null,
-    program: program ? program : null,
-    courses: courses ? courses.join(", ") : null
+    firstName,
+    lastName,
+    email,
+    age,
+    photo: photo?.name || user.photo,
+    hobbies: hobbies || null,
+    program: program || null,
+    courses: courses.length ? courses.join(", ") : null,
   };
 
-  await fetch(`/api/users/${userId}/info`, {
-    method: "PUT",
-    headers: { "Content-type": "application/json" },
-    body: JSON.stringify(body)
-  });
+  try {
+    const response = await fetch(`/api/users/${userId}/info`, {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(body),
+    });
 
-  closeEditModal();
-  showNotification("Changes saved successfully. Reload the page to see the updated profile.", "success");
+    if (!response.ok) throw new Error("Failed to update user information.");
+
+    closeEditModal();
+    showNotification("Changes saved successfully. Reload the page to see the updated profile.", "success");
+  } catch (error) {
+    console.error(error);
+    showNotification("An error occurred while saving changes.", "error");
+  };
 };
 
 export function displayDataInModalFields(user) {
+  const form = document.querySelector(".modal__form");
 
+  form.querySelector("#first-name").value = user.first_name || "";
+  form.querySelector("#last-name").value = user.last_name || "";
+  form.querySelector("#email").value = user.email || "";
+  form.querySelector("#age").value = user.age || "";
+
+  const photoPreview = form.querySelector(".form__photo-preview");
+  if (user.photo) {
+    photoPreview.src = `/api/photo/${user.id}`;
+    photoPreview.style.display = "block";
+  } else {
+    photoPreview.src = "";
+    photoPreview.style.display = "none";
+  }
+
+  form.querySelector("#hobbies").value = user.hobbies || "";
+  form.querySelector("#program").value = user.program || "";
+
+  const coursesCheckboxes = form.querySelectorAll(".form__checkbox-list input[type='checkbox']");
+  coursesCheckboxes.forEach(checkbox => {
+    checkbox.checked = user.courses?.includes(checkbox.value) || false;
+  });
 };
 
 export function onModalPhotoChange(input) {

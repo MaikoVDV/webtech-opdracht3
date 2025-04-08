@@ -6,7 +6,7 @@ import { connectDB } from "../connect-database.js";
 
 // Operates on /api/users/:id
 const userQuery = `
-  SELECT id, email, first_name, last_name, age, photo
+  SELECT id, email, first_name, last_name, age, photo, hobbies, program, courses
   FROM Students
   WHERE id = ?;
 `;

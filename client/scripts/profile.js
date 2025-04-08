@@ -1,10 +1,22 @@
 import { elementBuilder } from "./utils.js";
 import { openEditModal, closeEditModal, saveChanges, onPhotoButtonClick, onModalPhotoChange, displayDataInModalFields } from "./profile-modal.js";
+import { getLoggedInUser } from "./account-management.js";
 
 async function loadProfileData() {
   const userId = window.location.pathname.split('/').pop(); // Get username from URL
   const response = await fetch(`/api/users/${userId}`);
   const user = await response.json();
+
+  const loggedInUser = await getLoggedInUser();
+  if (!loggedInUser) return;
+
+  console.log(userId, loggedInUser.id);
+
+  if (userId != loggedInUser.id) {
+    console.log("hi");
+    const profileEditButton = document.querySelector(".profile__button-edit");
+    profileEditButton.style.display = "none";
+  };
 
   const nameHeader = document.querySelector(".profile__fullname");
   nameHeader.textContent = `${user.first_name} ${user.last_name}`;
