@@ -26,7 +26,7 @@
   </header>
   <main>
     <div class="notification"></div>
-    <div class="modal">
+    <div class="modal" id="profile">
       <span class="modal__button-close">&times;</span>
       <h2>Edit profile</h2>
       <form class="modal__form">
@@ -118,6 +118,16 @@
         <h2 class="profile__sec-header" id="courses">Courses</h2>
         <ul class="profile__list-container" id="courses-container"></ul>
       </section>
+      <div class="modal" id="course">
+        <div class="modal__content">
+          <span class="modal__button-close">&times;</span>
+          <h2 class="modal__title"></h2>
+          <p class="modal__description"></p>
+          <p><strong>Teacher:</strong> <span class="modal__teacher"></span></p>
+          <p><strong>Students:</strong></p>
+          <ul class="modal__students"></ul>
+        </div>
+      </div>
     </article>
   </main>
 </body>

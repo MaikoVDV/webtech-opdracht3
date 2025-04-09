@@ -80,3 +80,16 @@ export const getCourses = async (req, res) => {
     [id]);
   res.json(course);
 };
+
+// Operates on /api/users/:id/:course_id/participants
+export const getCourseParticipants = async (req, res) => {
+  const db = await connectDB();
+  const { course_id } = req.params;
+  const course = await db.all(`
+    SELECT *
+    FROM CourseParticipants
+    WHERE course_id = ?;
+`,
+    [course_id]);
+  res.json(course);
+};

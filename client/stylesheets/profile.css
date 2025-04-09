@@ -102,6 +102,26 @@ body.modal--visible::before {
   border-radius: 5px;
   width: 100%; 
 }
+
+.modal__content {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+.modal__title {
+  font-size: 1.8rem;
+  font-weight: bold;
+  margin: 0;
+}
+.modal__description {
+  font-size: 1rem;
+  color: #666;
+}
+.modal__students {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
 .modal__form textarea:focus,
 .modal__form input:focus,
 .modal__form select:focus {
@@ -154,6 +174,34 @@ body.modal--visible::before {
   width: auto;
 }
 
+.modal__students {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  max-height: 120px; 
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
+.modal__students li {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 0;
+}
+
+.modal__students img {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+}
+
+.modal__students a {
+  margin: 0;
+  font-size: 1rem;
+  color: black;
+  text-decoration: none;
+}
 
 .form__checkbox-list {
   position: flex;
@@ -205,6 +253,9 @@ body.modal--visible::before {
   gap: 0.5rem;
   padding: 0px;
 }
+.profile__list-container#courses-container li {
+  cursor: pointer;
+}
 .profile__list-item {
   margin: 0px;
   background: white;
@@ -215,12 +266,6 @@ body.modal--visible::before {
   margin: 0px;
 }
 
-.profile__list-item--subsection {
-  display: none;
-}
-.profile__list-item:hover .profile__list-item--subsection {
-  display: block;
-}
 .course-item:hover .course-item__participants-button {
   background-color: var(--btn-color-standard);
   transition: background-color 0.3s;

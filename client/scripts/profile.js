@@ -5,6 +5,10 @@ import { getLoggedInUser } from "./account-management.js";
 async function loadProfileData() {
   const userId = window.location.pathname.split('/').pop();
   const response = await fetch(`/api/users/${userId}`);
+  if (response.status == 401) {
+    // Request not authorized, ask user to log in again.
+    return window.location.href = "/";
+  }
   const user = await response.json();
 
   const loggedInUser = await getLoggedInUser();
@@ -29,11 +33,13 @@ async function loadProfileData() {
   displayDataInModalFields(user);
 
   document.querySelector(".profile__button-edit").addEventListener("click", openEditModal);
-  document.querySelector(".modal__button-close").addEventListener("click", closeEditModal);
-  document.querySelector(".form__button#cancel").addEventListener("click", closeEditModal);
-  document.querySelector("#input-photo").addEventListener("change", onModalPhotoChange);
-  document.querySelector(".form__button#save").addEventListener("click", saveChanges);
-  document.querySelector(".form__button").addEventListener("click", onPhotoButtonClick);
+  const profileModal = document.querySelector(".modal#profile");
+
+  profileModal.querySelector(".modal__button-close").addEventListener("click", closeEditModal);
+  profileModal.querySelector(".form__button#cancel").addEventListener("click", closeEditModal);
+  profileModal.querySelector("#input-photo").addEventListener("change", onModalPhotoChange);
+  profileModal.querySelector(".form__button#save").addEventListener("click", saveChanges);
+  profileModal.querySelector(".form__button").addEventListener("click", onPhotoButtonClick);
 
 
   const friendsContainer = document.querySelector("#friends-container");
@@ -59,31 +65,62 @@ async function loadProfileData() {
   const coursesHeader = document.querySelector(".profile__sec-header#courses");
   coursesHeader.textContent += ` (${courses.length})`;
 
-
   for (const course of courses) {
     let courseItem = coursesContainer.appendChild(elementBuilder("li", {
-      class: "profile__list-item course-item"
+      class: "profile__list-item course-item",
+      "course": course.id
     }));
     courseItem.appendChild(elementBuilder("p", {
       class: "course-item__name",
       textContent: course.name
     }));
-
-    let courseDetails = courseItem.appendChild(elementBuilder("div", {
-      class: "profile__list-item--subsection",
-    }));
-    courseDetails.appendChild(elementBuilder("p", {
-      class: "course-item__description",
-      textContent: course.description
-    }));
-    courseDetails.appendChild(elementBuilder("p", {
-      class: "course-item__teacher",
-      textContent: `${course.teacher_first_name} ${course.teacher_last_name}`
-    }));
-    courseDetails.appendChild(elementBuilder("button", {
-      class: "course-item__participants-button",
-      textContent: `${course.teacher_first_name} ${course.teacher_last_name}`
-    }));
   };
+
+  const courseItems = document.querySelectorAll(".course-item");
+  const courseModal = document.querySelector(".modal#course");
+
+  const modalCloseButton = courseModal.querySelector(".modal__button-close");
+  const modalTitle = courseModal.querySelector(".modal__title");
+  const modalDescription = courseModal.querySelector(".modal__description");
+  const modalTeacher = courseModal.querySelector(".modal__teacher");
+  const modalStudents = courseModal.querySelector(".modal__students");
+
+  for (const item of courseItems) {
+    item.addEventListener('click', async () => {
+      const courseId = parseInt(item.getAttribute("course"));
+
+      modalTitle.textContent = courses[courseId - 1].name;
+      modalDescription.textContent = courses[courseId - 1].description;
+      modalTeacher.textContent = `${courses[courseId - 1].teacher_first_name} ${courses[courseId - 1].teacher_last_name}`;
+
+      const participantsQuery = await fetch(`/api/users/${userId}/${courseId}/participants`);
+      const participants = await participantsQuery.json();
+
+      modalStudents.innerHTML = '';
+      for (const participant of participants) {
+        const userQuery = await fetch(`/api/users/${participant.student_id}`);
+        const user = await userQuery.json();
+
+        const studentElement = document.createElement("li");
+        studentElement.appendChild(elementBuilder("img", {
+          src: `/api/photo/${user.id}`,
+          alt: `Photo of ${user.first_name}`
+        }));
+        studentElement.appendChild(elementBuilder("a", {
+          textContent: `${user.first_name} ${user.last_name}`,
+          href: `/users/${user.id}`
+        }));
+        modalStudents.appendChild(studentElement);
+      };
+
+      courseModal.style.display = "block";
+      document.body.classList.add("modal--visible");
+    });
+  };
+
+  modalCloseButton.addEventListener("click", () => {
+    courseModal.style.display = "none";
+    document.body.classList.remove("modal--visible");
+  });
 }
 loadProfileData();

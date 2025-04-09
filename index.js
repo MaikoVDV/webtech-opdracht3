@@ -1,6 +1,6 @@
 import { initDB, SqliteStore } from "./connect-database.js";
 import { loginRouteHandler, registerRouteHandler, getLoggedInUser, checkLoggedIn } from "./api/account-management.js";
-import { getUser, getProfilePhoto, getFriends, getCourses } from "./api/users.js";
+import { getUser, getProfilePhoto, getFriends, getCourses, getCourseParticipants } from "./api/users.js";
 import { addFriendHandler, getFriendReqsHandler, respondFriendReqHandler } from "./api/friends.js";
 import { getChatHandler, sendMessageHandler } from "./api/chat.js";
 import { updateUserInfo } from "./api/profile-management.js";
@@ -67,10 +67,7 @@ app.get("/users", async (req, res) => {
   if (req.session.user) {
     res.redirect(`/users/${req.session.user.id}`);
   } else {
-    // TODO: Handle case where user visits /users but is not logged in
-    console.warn("User visited /users but is not logged in!");
-    res.send(req.session);
-    // res.send("Not logged in!");
+    res.redirect(`/`);
   }
 });
 
@@ -83,6 +80,7 @@ app.get("/users/:id", async (req, res) => {
 app.get("/api/users/:id", checkLoggedIn, getUser);
 app.get("/api/users/:id/friends", checkLoggedIn, getFriends);
 app.get("/api/users/:id/courses", checkLoggedIn, getCourses);
+app.get("/api/users/:id/:course_id/participants", checkLoggedIn, getCourseParticipants);
 app.get("/api/photo/:id", [ /// TODO: ADD FRIENDSHIP / SAME COURSE CHECK
   checkLoggedIn,
   param("id").trim().notEmpty().isInt()
