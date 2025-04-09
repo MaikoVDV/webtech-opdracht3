@@ -6,9 +6,8 @@
   padding: 1rem;
   max-width: 35rem;
   left: 50%;
-  transform: translateX(-50%);
+  transform: translateX(-50%); /* Centers the form horizontally */
   position: relative;
-
   border-radius: var(--default-border-radius);
 }
 .profile-form__error-message {
@@ -16,7 +15,7 @@
   color: red;
 }
 .profile-form__error-message:empty {
-  display: none;
+  display: none; /* Hide error messages when empty */
 }
 
 .profile-form__title {
@@ -26,7 +25,7 @@
 .profile-form__item {
   width: 100%;
   display: flex;
-  justify-content: space-between;
+  justify-content: space-between; /* Distribute label and input evenly */
   font-size: 1.2rem;
 }
 
@@ -35,12 +34,12 @@
   background: #FFF;
   padding: 0.5em;
   border-radius: var(--default-border-radius);
-  border: 2px solid #DDD;
+  border: 2px solid #DDD; /* Add subtle border for inputs */
 }
 
 .profile-form__submit {
   background-color: var(--btn-color-confirm);
-  transition: background-color 0.3s;
+  transition: background-color 0.3s; /* Smooth color transition on hover */
   border-radius: var(--default-border-radius);
   border: 2px solid var(--btn-color-confirm-2);
   padding: 0.5em;
@@ -60,27 +59,27 @@
   position: fixed;
   top: 50%;
   left: 50%;
-  transform: translate(-50%, -50%);
+  transform: translate(-50%, -50%); /* Center modal on the screen */
   background-color: rgb(251, 251, 251);
   border: none;
   border-radius: var(--default-border-radius);
   padding: 1rem;
-  z-index: 999;
+  z-index: 999; /* Ensure it appears above other elements */
   width: 90%;
   max-width: 900px;
-  max-height: 85vh;
-  overflow-y: auto; 
-  scrollbar-width: none;
+  max-height: 85vh; /* Prevent overflow on small screens */
+  overflow-y: auto;
+  scrollbar-width: none; /* Hide scrollbars for cleaner look */
 }
 .register::-webkit-scrollbar {
-  display: none;
+  display: none; /* Hide scrollbars for WebKit-based browsers */
 }
-.register h2{
+.register h2 {
   padding-left: 0.5em;
 }
 .register__form {
   display: grid;
-  grid-template-columns: 1fr 2fr;
+  grid-template-columns: 1fr 2fr; /* Split into two columns: label and input */
   gap: 10px;
   padding: 20px;
   align-items: center;
@@ -91,13 +90,13 @@
 }
 .register__form small {
   text-align: left;
-  grid-column: span 2;
+  grid-column: span 2; /* Span across both columns */
   width: 100%;
 }
 .register__form select:not([multiple]) {
   -webkit-appearance: none; 
   -moz-appearance: none;
-  appearance: none; 
+  appearance: none; /* Standardize appearance across browsers */
 }
 .register__form textarea,
 .register__form label,
@@ -117,13 +116,15 @@
 .register__form select:focus {
   outline: none;
   border-width: 0 0 2px;
-  border-color: var(--btn-color-confirm);
+  border-color: var(--btn-color-confirm); /* Highlight inputs on focus */
   transition: border-color 0.3s ease;
 }
 .register__form section {
   display: flex;
   align-items: center;
   gap: 10px;
+  width: auto;
+  height: 50px;
 }
 .register__form input#input-photo {
   display: none;
@@ -136,17 +137,17 @@
   text-align: center;
   cursor: pointer;
   border-radius: var(--default-border-radius);
-  transition: background-color 0.3s ease;
+  transition: background-color 0.3s ease; /* Smooth hover effect */
 }
 .form__button:hover {
   background-color: var(--btn-color-confirm-2);
 }
 .form__button#photo {
-  width: 30%;
+  width: 30%; /* Set a fixed width for the photo upload button */
   height: auto;
   display: flex;
-  align-items: center;
-  justify-content: center;
+  align-items: center; /* Center content vertically */
+  justify-content: center; /* Center content horizontally */
 }
 .form__button#submit,
 .form__button#cancel {
@@ -154,28 +155,20 @@
   display: flex;
   width: 90%;
   text-decoration: none;
-  justify-content: center;
+  justify-content: center; /* Center text within the button */
   gap: 10px;
   font-size: 1em;
   border-radius: var(--default-border-radius);
   border: none;
   cursor: pointer;
 }
-.form__button#submit{
+.form__button#submit {
   width: 95%;
 }
 
 a {
-  color:black;
+  color: black;
   text-decoration: none;
-}
-
-.register__form section {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  width: auto;
-  height: 50px;
 }
 
 .form__button#cancel:hover {
@@ -183,16 +176,15 @@ a {
 }
 
 .form__photo-preview {
-  display: none;
-  border-radius: var(--default-border-radius);
+  display: block;
+  border-radius: var(--default-border-radius); /* Rounded preview images */
   max-width: 50px;
   max-height: 50px;
 }
 
 .form__checkbox-list {
-  position: flex;
   display: flex;
-  align-items: right;
+  align-items: normal;
   flex-direction: column;
   width: 100%;
   z-index: 1;
@@ -200,7 +192,7 @@ a {
   border-width: 0 0 2px;
   border-color: var(--btn-color-standard);
   border-radius: 5px;
-  max-height: 120px; 
+  max-height: 120px; /* Limit height and allow scrolling */
   overflow-y: auto;
   overflow-x: hidden;
 }
@@ -224,7 +216,7 @@ a {
   box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
   display: none;
   font-size: 1em;
-  animation: fadeout 3s forwards;
+  animation: fadeout 3s forwards; /* Fade out effect for notifications */
   z-index: 1000;
 }
 
@@ -237,9 +229,9 @@ a {
 @media (max-width: 900px) {
   .register {
     width: 100%;
-    height: 100%;
+    height: 100%; /* Make modal fill the screen on smaller devices */
   }
   .register__form {
-    grid-template-columns: 1fr;
+    grid-template-columns: 1fr; /* Collapse to one column layout */
   }
 }

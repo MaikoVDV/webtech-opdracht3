@@ -1,42 +1,49 @@
 .friend-req-list {
   padding-left: 0px;
   margin: 0px;
-  list-style: none;
-  gap: 0.8rem;
+  list-style: none; /* Remove default list styling */
+  gap: 0.8rem; /* Add spacing between list items */
   display: flex;
-  flex-direction: column;
+  flex-direction: column; /* Align list items vertically */
 }
+
 .friend-req-list__item {
   display: flex;
-  flex-direction: row;
-  justify-content: space-between;
+  flex-direction: row; /* Align content horizontally within each item */
+  justify-content: space-between; /* Place content at opposite ends of the row */
+  align-items: center; /* Vertically align content within the item */
   background-color: white;
-  align-items: center;
   padding: 0.5rem;
-  border-radius: var(--default-border-radius);
+  border-radius: var(--default-border-radius); /* Apply rounded corners for a softer look */
 }
+
 .friend-req-list__item div {
   display: flex;
-  flex-direction: row;
-  align-items: center;
-  gap: 0.5rem;
+  flex-direction: row; /* Align text and image horizontally */
+  align-items: center; /* Vertically align text and image */
+  gap: 0.5rem; /* Add space between the image and text */
 }
+
 .friend-req-list__student-name {
-  font-size: 1.5rem;
+  font-size: 1.5rem; /* Increase font size for better readability */
 }
+
 .friend-req-list__item p {
-  margin: 0px;
+  margin: 0px; /* Remove default paragraph margins */
 }
+
 .friend-req-list__item button {
   background-color: var(--btn-color-standard);
-  border: var(--btn-color-standard-2) solid 2px;
-  transition: background-color 0.2s;
-  padding: 0.8em 1.8em;
+  border: var(--btn-color-standard-2) solid 2px; /* Add a border for button definition */
+  transition: background-color 0.2s; /* Smooth background color transition on hover */
+  padding: 0.8em 1.8em; /* Increase button size for accessibility */
 }
+
 .friend-req-list__item button:hover {
-  background-color: var(--btn-color-standard-2);
+  background-color: var(--btn-color-standard-2); /* Change button background color on hover */
 }
+
 .friend-req-list__item img {
-  border-radius: 100px;
-  height: 3rem;
+  border-radius: 100px; /* Make the image circular */
+  height: 3rem; /* Set a fixed height for consistency */
 }

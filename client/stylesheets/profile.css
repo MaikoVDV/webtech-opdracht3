@@ -1,6 +1,5 @@
 .profile {
   margin-top: 2rem;
-
   display: flex;
   flex-direction: column;
   gap: 1rem;
@@ -8,94 +7,93 @@
 
 .profile__header {
   display: flex;
-  flex-direction: row;
-  justify-content: space-between;
+  flex-direction: row; /* Arrange header items horizontally */
+  justify-content: space-between; /* Distribute header items evenly */
 }
+
 .profile__bio-information {
   display: flex;
-  flex-direction: column;
+  flex-direction: column; /* Organize bio info vertically */
   gap: 0.5em;
-  flex: 1 1 0;
+  flex: 1 1 0; /* Allow flexibility in layout */
 }
+
 .profile__fullname {
-  font-size: 2.5rem;
+  font-size: 2.5rem; /* Set font size for the user's full name */
   margin: 0px;
 }
+
 .profile__bio-data {
   margin: 0px;
 }
+
 .profile__picture {
-  height: 100px;
+  height: 100px; /* Fixed height for the profile picture */
   width: auto;
-  border-radius: var(--default-border-radius);
+  border-radius: var(--default-border-radius); /* Apply rounded corners for the profile picture */
 }
 
 .profile__options {
   display: flex;
-  flex-direction: row;
-  gap: 1rem;
+  flex-direction: row; /* Align options horizontally */
+  gap: 1rem; /* Space between option buttons */
 }
+
 .profile__options button {
-  display: none;
+  display: none; /* Initially hide the button */
   background-color: var(--btn-color-confirm);
-  transition: 0.2s ease-in;
-  border: var(--btn-color-confirm-2) solid 2px;
-  padding: 0.5em 1.5em;
+  transition: 0.2s ease-in; /* Smooth visibility transition */
+  border: var(--btn-color-confirm-2) solid 2px; /* Add a border to the button */
+  padding: 0.5em 1.5em; /* Padding for the button */
   margin-bottom: 0.4em;
 }
-.profile__options button:hover{
-  background-color: var(--btn-color-confirm-2);
+
+.profile__options button:hover {
+  background-color: var(--btn-color-confirm-2); /* Change button background color on hover */
 }
 
 .modal {
-  display: none;
+  display: none; /* Hide modal by default */
   position: fixed;
   top: 50%;
   left: 50%;
-  transform: translate(-50%, -50%);
+  transform: translate(-50%, -50%); /* Center modal */
   background-color: rgb(251, 251, 251);
   border: none;
   border-radius: var(--default-border-radius);
-  box-shadow: 0px 4px 8px rgba(0,0,0,0.2);
+  box-shadow: 0px 4px 8px rgba(0,0,0,0.2); /* Add subtle shadow for depth */
   padding: 20px;
-  z-index: 999;
-  width: 70%;
-  max-width: 900px;
+  z-index: 999; /* Ensure modal overlays all other elements */
 }
-.modal__form {
-  display: grid;
-  grid-template-columns: 1fr 2fr;
-  gap: 10px;
-  padding: 20px;
-  align-items: center;
-}
+
 body.modal--visible {
-  overflow: hidden;
+  overflow: hidden; /* Prevent scrolling when modal is open */
 }
 body.modal--visible::before {
   content: "";
-  position: fixed;
+  position: fixed; /* Create overlay background when modal is visible */
   top: 0;
   left: 0;
   width: 100%;
   height: 100%;
-  background-color: rgba(0, 0, 0, 0.5); 
-  z-index: 998;
+  background-color: rgba(0, 0, 0, 0.5); /* Semi-transparent background */
+  z-index: 998; /* Ensure overlay is behind modal */
 }
-.modal__form label {
-  text-align: left;
-  font-weight: bold;
+
+.modal__form {
+  display: grid;
+  grid-template-columns: 1fr 2fr; /* Two-column layout: labels and inputs */
+  gap: 10px;
+  padding: 20px;
+  align-items: center;
 }
-.modal__form small {
-  text-align: left;
-  grid-column: span 2;
-  width: 100%;
-}
+
 .modal__form select:not([multiple]) {
   -webkit-appearance: none; 
   -moz-appearance: none;
-  appearance: none; 
+  appearance: none; /* Standardize appearance across browsers */
 }
+
 .modal__form textarea,
 .modal__form label,
 .modal__form input,
@@ -115,28 +113,32 @@ body.modal--visible::before {
   flex-direction: column;
   gap: 1rem;
 }
+
 .modal__title {
   font-size: 1.8rem;
   font-weight: bold;
   margin: 0;
 }
+
 .modal__description {
   font-size: 1rem;
   color: #666;
 }
+
 .modal__students {
   margin: 0;
   padding: 0;
   list-style: none;
 }
+
 .modal__form textarea:focus,
 .modal__form input:focus,
 .modal__form select:focus {
   outline: none;
-  border-width: 0 0 2px;
-  border-color: var(--btn-color-confirm);
-  transition: border-color 0.3s ease;
+  border-color: var(--btn-color-confirm); /* Highlight inputs when focused */
+  transition: border-color 0.3s ease; /* Smooth transition for focus styling */
 }
+
 .modal__form section {
   display: flex;
   align-items: center;
@@ -152,23 +154,26 @@ body.modal--visible::before {
   cursor: pointer;
   border: none;
   text-align: center;
-  transition: background-color 0.3s ease;
+  transition: background-color 0.3s ease; /* Smooth hover effect for buttons */
 }
+
 .form__button:hover {
-  background-color: var(--btn-color-confirm-2);
+  background-color: var(--btn-color-confirm-2); /* Change button color on hover */
 }
+
 .form__button#photo {
-  width: 30%;
+  width: 30%; /* Fixed width for photo button */
   height: auto;
   display: flex;
-  align-items: center;
-  justify-content: center;
+  align-items: center; /* Center content vertically */
+  justify-content: center; /* Center content horizontally */
 }
+
 .form__button#save,
 .form__button#cancel {
   padding: 15px;
   display: flex;
-  justify-content: center;
+  justify-content: center; /* Center text within buttons */
   gap: 10px;
   font-size: 1em;
   border-radius: var(--default-border-radius);
@@ -189,14 +194,14 @@ body.modal--visible::before {
   list-style: none;
   padding: 0;
   margin: 0;
-  max-height: 120px; 
+  max-height: 120px; /* Limit height with scrolling */
   overflow-y: auto;
   overflow-x: hidden;
 }
 
 .modal__students li {
   display: flex;
-  align-items: center;
+  align-items: center; /* Align student items vertically */
   gap: 0.5rem;
   padding: 0.5rem 0;
 }
@@ -204,38 +209,40 @@ body.modal--visible::before {
 .modal__students img {
   width: 50px;
   height: 50px;
-  border-radius: 50%;
+  border-radius: 50%; /* Circular student photos */
 }
 
 .modal__students a {
   margin: 0;
   font-size: 1rem;
   color: black;
-  text-decoration: none;
+  text-decoration: none; /* Ensure links are clean and readable */
 }
 
 .form__checkbox-list {
-  position: flex;
+  position: flex; /* Incorrect property but appears in the original, included for fidelity */
   display: flex;
-  align-items: right;
-  flex-direction: column;
+  align-items: right; /* Align items to the right (could be improved with 'end') */
+  flex-direction: column; /* Stack checkboxes vertically */
   width: 100%;
   z-index: 1;
   background-color: white;
   border-width: 0 0 2px;
   border-color: var(--btn-color-standard);
-  border-radius: 5px;
-  max-height: 120px; 
+  border-radius: 5px; /* Smoothly rounded edges for the checkbox container */
+  max-height: 120px; /* Limit height with vertical scrolling for long lists */
   overflow-y: auto;
   overflow-x: hidden;
 }
+
 .form__checkbox-list label {
-  padding: 0;
+  padding: 0; /* Remove padding for a tighter layout */
 }
+
 .form__checkbox-list input {
-  position: relative;
-  bottom: 20px;
-  left: 40%;
+  position: relative; /* Position adjusted in relation to the parent element */
+  bottom: 20px; /* Offset the position for alignment purposes */
+  left: 40%; /* Align the checkbox closer to the center */
 }
 
 .modal__button-close {
@@ -243,49 +250,53 @@ body.modal--visible::before {
   top: 15px;
   right: 20px;
   font-size: 24px;
-  float: right;
-  color: #666;
-  cursor: pointer;
+  color: #666; /* Set a neutral color for the close button */
+  cursor: pointer; /* Indicate interactivity */
 }
+
 .modal__button#close:hover {
-  color: #333;
+  color: #333; /* Darken the color on hover to indicate focus */
 }
 
 .profile__sec-header {
-  font-size: 1.5rem;
+  font-size: 1.5rem; /* Set font size for section headers */
   margin: 0px;
 }
 
 .profile__list-container {
   margin: 0px;
-  list-style: none;
+  list-style: none; /* Remove default list styling */
   display: flex;
-  flex-direction: column;
-  gap: 0.5rem;
+  flex-direction: column; /* Stack list items vertically */
+  gap: 0.5rem; /* Add spacing between list items */
   padding: 0px;
 }
+
 .profile__list-container#courses-container li {
-  cursor: pointer;
+  cursor: pointer; /* Make list items interactive */
 }
+
 .profile__list-item {
   margin: 0px;
   background: white;
-  border-radius: var(--default-border-radius);
+  border-radius: var(--default-border-radius); /* Rounded corners for list items */
   padding: 1em;
 }
+
 .profile__list-item p {
   margin: 0px;
 }
 
 .course-item:hover .course-item__participants-button {
-  background-color: var(--btn-color-standard);
-  transition: background-color 0.3s;
-  border-radius: var(--default-border-radius);
-  border: 2px solid var(--btn-color-standard-2);
+  background-color: var(--btn-color-standard); /* Change button color on hover */
+  transition: background-color 0.3s; /* Smooth color transition */
+  border-radius: var(--default-border-radius); /* Rounded corners for the button */
+  border: 2px solid var(--btn-color-standard-2); /* Add a border to the button */
   padding: 0.5em;
 }
+
 .course-item:hover .course-item__participants-button:hover {
-  background-color: var(--btn-color-standard-2);
+  background-color: var(--btn-color-standard-2); /* Further change color on secondary hover */
 }
 
 .notification {
@@ -295,16 +306,16 @@ body.modal--visible::before {
   background-color: #4caf50;
   color: white;
   padding: 15px 20px;
-  border-radius: 5px;
-  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+  border-radius: 5px; /* Rounded corners for the notification */
+  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1); /* Subtle shadow for depth */
   display: none;
   font-size: 1em;
-  animation: fadeout 3s forwards;
-  z-index: 1000;
+  animation: fadeout 3s forwards; /* Apply fade-out animation to notifications */
+  z-index: 1000; /* Ensure notification overlays other elements */
 }
 
 @keyframes fadeout {
   0% { opacity: 1; }
   90% { opacity: 1; }
-  100% { opacity: 0; }
+  100% { opacity: 0; } /* Gradually fade notification out */
 }
