@@ -9,59 +9,96 @@ export function closeEditModal() {
 }
 
 export function onPhotoButtonClick() {
-  document.querySelector(".modal__form input#photo").click();
+  document.querySelector("input#input-photo").click();
 }
 
 export async function saveChanges() {
-  const userId = window.location.pathname.split('/').pop(); // Get username from URL
+  const userId = window.location.pathname.split('/').pop();
+  const response = await fetch(`/api/users/${userId}`);
+  const user = await response.json();
 
-  const firstName = document.querySelector(".modal__form input#first-name").value.trim();
-  const lastName = document.querySelector(".modal__form input#last-name").value.trim();
-  const email = document.querySelector(".modal__form input#email").value.trim();
-  const age = parseInt(document.querySelector(".modal__form input#age").value.trim(), 10);
-  const photo = document.querySelector(".modal__form input#photo").files[0];
-  const hobbies = document.querySelector(".modal__form input#hobbies").value.trim();
-  const program = document.querySelector(".modal__form select#program").value;
-  const courses = Array.from(document.querySelectorAll(".modal__form .form__checkbox-list input:checked")).map(
-    checkbox => checkbox.value
-  );
+  const form = document.querySelector(".modal__form");
 
-  if (!firstName || !lastName) {
-    showNotification("First and last names cannot be empty.", "error");
-    return;
-  };
-  if (!validateEmail(email)) {
-    showNotification("Please enter a valid email address.", "error");
-    return;
-  };
-  if (!age || age <= 0) {
-    showNotification("Please enter a valid age greater than 0.", "error");
-    return;
-  };
+  const first_name = form.querySelector("#first-name").value.trim();
+  const last_name = form.querySelector("#last-name").value.trim();
+  const email = form.querySelector("#email").value.trim();
+  const age = parseInt(form.querySelector("#age").value.trim(), 10);
+  const photo = form.querySelector("#input-photo").files[0];
+  const hobbies = form.querySelector("#hobbies").value.trim();
+  const program = form.querySelector("#program").value;
+  const courses = Array.from(form.querySelectorAll(".form__checkbox-list input:checked"))
+    .map(checkbox => checkbox.value);
 
-  console.log("Saved details:", { firstName, lastName, email, age, program, hobbies, courses });
-  console.log("Photo:", photo ? photo.name : "No photo uploaded");
+  if (!first_name || !last_name) return showNotification("First and last names cannot be empty.", "error");
+  if (!validateEmail(email)) return showNotification("Please enter a valid email address.", "error");
+  if (!await uniqueEmail(email)) return showNotification("The email address entered is already in use.", "error");
+  if (!age || age <= 0) return showNotification("Please enter a valid age greater than 0.", "error");
 
   const body = {
-    firstName: firstName,
-    lastName: lastName,
-    email: email,
-    age: age,
-    photo: photo ? photo.name : null,
-    hobbies: hobbies,
+    first_name,
+    last_name,
+    email,
+    age,
+    photo: photo?.name || user.photo,
+    hobbies: hobbies || null,
     program: program,
-    courses: courses.join(", ")
+    courses: courses.length ? courses.join(", ") : null,
   };
 
-  const response = await fetch(`/api/users/${userId}/info`, {
-    method: "PUT",
-    body: body
-  });
-  const responseObj = await response.json();
-  console.log(responseObj);
+  try {
+    const response = await fetch(`/api/users/${userId}/info`, {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(body),
+    });
 
-  closeEditModal();
-  showNotification("Changes saved successfully. Reload the page to see the updated profile.", "success");
+    if (!response.ok) throw new Error("Failed to update user information.");
+
+    closeEditModal();
+    showNotification("Changes saved successfully. Reload the page to see the updated profile.", "success");
+  } catch (error) {
+    console.error(error);
+    showNotification("An error occurred while saving changes.", "error");
+  };
+};
+
+export function displayDataInModalFields(user) {
+  const form = document.querySelector(".modal__form");
+
+  form.querySelector("#first-name").value = user.first_name || "";
+  form.querySelector("#last-name").value = user.last_name || "";
+  form.querySelector("#email").value = user.email || "";
+  form.querySelector("#age").value = user.age || "";
+
+  const photoPreview = form.querySelector(".form__photo-preview");
+  if (user.photo) {
+    photoPreview.src = `/api/photo/${user.id}`;
+    photoPreview.style.display = "block";
+  } else {
+    photoPreview.src = "";
+    photoPreview.style.display = "none";
+  }
+
+  form.querySelector("#hobbies").value = user.hobbies || "";
+  form.querySelector("#program").value = user.program || "";
+
+  const coursesCheckboxes = form.querySelectorAll(".form__checkbox-list input[type='checkbox']");
+  coursesCheckboxes.forEach(checkbox => {
+    checkbox.checked = user.courses?.includes(checkbox.value) || false;
+  });
+};
+
+export function onModalPhotoChange(input) {
+  const file = input.target.files[0];
+  if (file) {
+    const reader = new FileReader();
+    reader.onload = function (e) {
+      const preview = document.querySelector(".form__photo-preview");
+      preview.src = e.target.result;
+      preview.style.display = "block";
+    };
+    reader.readAsDataURL(file);
+  };
 };
 
 function validateEmail(email) {
@@ -79,4 +116,3 @@ function showNotification(message, type) {
     notification.style.display = "none";
   }, 3000);
 };
-

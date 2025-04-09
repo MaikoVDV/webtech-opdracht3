@@ -16,11 +16,11 @@ export const loginRouteHandler = async (req, res) => {
   const db = await connectDB();
   const { email, password } = req.body;
   if (email == null || email == "") {
-    res.status(401).json({error: "Please enter an e-mail address."});
+    res.status(401).json({ error: "Please enter an e-mail address." });
     return;
   }
   if (password == null || password == "") {
-    res.status(401).json({error: "Please enter a password."});
+    res.status(401).json({ error: "Please enter a password." });
     return;
   }
 
@@ -37,16 +37,21 @@ export const loginRouteHandler = async (req, res) => {
       }
       res.status(200).send();
     } else {
-      res.status(401).json({error: "Incorrect combination of email and password."});
+      res.status(401).json({ error: "Incorrect combination of email and password." });
     }
   } else {
-    res.status(401).json({error: "Incorrect combination of email and password."});
+    res.status(401).json({ error: "Incorrect combination of email and password." });
   }
 };
 
 const insertUserQuery = `
-INSERT INTO Students (email, first_name, last_name, age, photo, password)
-VALUES (?, ?, ?, ?, ?, ?);
+INSERT INTO Students (email, first_name, last_name, age, photo, password, hobbies, program, courses)
+VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?);
+`;
+const uniqueEmailQuery = `
+SELECT 1
+FROM Students
+WHERE email = ?;
 `;
 export const registerRouteHandler = async (req, res) => {
   const busboy = Busboy({ headers: req.headers });
@@ -74,13 +79,33 @@ export const registerRouteHandler = async (req, res) => {
   // After form data processing is finished, update the database.
   busboy.on("finish", async () => {
     try {
+      const db = await connectDB();
+
+      // Check if a user already exists with the given email address
+      const user = await db.get(uniqueEmailQuery, parsedData.email);
+      if (user) {
+        if (user["1"] == 1) {
+          return res.status(409).json({ error: "The given email address is already in use." });
+        }
+      }
+
       const hashedPassword = await bcrypt.hash(parsedData.password, 12);
 
-      const photoname = `${Date.now()}-${photo.name}`;
+      let photoname = null;
+      if (photo.buffer) {
+        photoname = `${Date.now()}-${photo.name}`;
+        // Safe photo to disk
+        const savepath = path.join(__dirname, "assets", "profile_pics", photoname);
+        fs.writeFile(savepath, photo.buffer, err => {
+          if (err) {
+            console.log(err);
+            return res.status(500).json({ error: "Failed to process submitted data." });
+          }
+        });
+      }
 
       // Insert database entry
-      const db = await connectDB();
-      await db.run(insertUserQuery, [parsedData.email, parsedData.first_name, parsedData.last_name, parsedData.age, photoname, hashedPassword]);
+      await db.run(insertUserQuery, [parsedData.email, parsedData.first_name, parsedData.last_name, parsedData.age, photoname, hashedPassword, parsedData.hobbies, parsedData.program, parsedData.courses]);
 
       const getUserQuery = `SELECT * FROM Students WHERE email = ?;`;
       const userData = await db.get(getUserQuery, parsedData.email);
@@ -92,19 +117,11 @@ export const registerRouteHandler = async (req, res) => {
         last_name: userData.last_name,
       }
 
-      // Safe photo to disk
-      const savepath = path.join(__dirname, "assets", "profile_pics", photoname);
-      fs.writeFile(savepath, photo.buffer, err => {
-        if (err) {
-          console.log(err);
-          return res.status(500).json({error: "Failed to process submitted data."});
-        }
-      });
 
       res.status(200).send();
     } catch (exception) {
       console.error(exception);
-      res.status(500).json({error: "Failed to register account."});
+      res.status(500).json({ error: "Failed to register account." });
     }
   })
   req.pipe(busboy);
@@ -122,7 +139,7 @@ export const getLoggedInUser = async (req, res) => {
   // Querying user to not have to store entire user row in req.session and 
   // to maintain a single source of data (instead of req.session AND the database.)
   const user = await db.get(getUserByIdQuery, req.session.user.id);
-  res.json(user);
+  return res.status(200).json(user);
 }
 
 // Middleware to protect routes that should only be accessible for logged-in users.
@@ -131,4 +148,71 @@ export const checkLoggedIn = (req, res, next) => {
     return next();
   }
   return res.status(401).json({error: "Failed to process request, not logged in."});
+}
+
+// Middleware to check if the user that sent the request is just the user that was requested.
+// Doesn't *really* need to be implemented as middleware, but this approach preserves consitency
+// with other route protection strategies (checkSameCourse, express-validator middlewares, etc.)
+export const checkIsLoggedInUser = async (req, res, next, id) => {
+  try {
+    const userId = req.session.user.id;
+    const otherId = id;
+    res.locals.checkIsLoggedInUser = userId == otherId;
+  } catch {
+    res.locals.checkIsLoggedInUser = false;
+  }
+  return next();
+}
+// Middleware to protect routes that should only be accessible for users that share a course with the other user
+// Assumes the user is logged in
+const checkSameCourseQuery = `
+SELECT cp1.course_id
+FROM CourseParticipants cp1
+JOIN CourseParticipants cp2
+ON cp2.course_id = cp1.course_id
+WHERE cp1.student_id = ? AND cp2.student_id = ?
+`;
+const basicUserQuery = `
+SELECT first_name, last_name
+FROM Students
+WHERE id = ?;
+`;
+export const checkShareCourses = async (req, res, next, id) => {
+  try {
+    const userId = req.session.user.id;
+    const otherId = id;
+    const db = await connectDB();
+    const sharedCourses = await db.all(checkSameCourseQuery, [userId, otherId]);
+
+    res.locals.checkShareCourses = sharedCourses.length > 0;
+  } catch {
+    res.locals.checkShareCourses = false;
+  }
+  return next();
+}
+
+// Middleware to protect routes that should only be accessible for users that are friends with the given other student
+// Assumes the user is logged in
+const checkFriendshipQuery = `
+    SELECT 1
+    FROM Friends f
+    JOIN Students s1 ON f.user1_id = s1.id
+    JOIN Students s2 ON f.user2_id = s2.id
+    WHERE (f.user1_id = ? AND f.user2_id = ?) OR (f.user1_id = ? AND f.user2_id = ?);
+`;
+export const checkAreFriends = async (req, res, next, id) => {
+  let out = false;
+  try {
+    const userId = req.session.user.id;
+    const otherId = id;
+    const db = await connectDB();
+    const friendshipCheck = await db.get(checkFriendshipQuery, [userId, otherId, otherId, userId]);
+    if (friendshipCheck) {
+      out = friendshipCheck["1"] == 1;
+    }
+  } catch {
+    out = false;
+  }
+  res.locals.checkAreFriends = out;
+  return next();
 }

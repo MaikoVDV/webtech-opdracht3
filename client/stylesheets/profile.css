@@ -15,6 +15,7 @@
   display: flex;
   flex-direction: column;
   gap: 0.5em;
+  flex: 1 1 0;
 }
 .profile__fullname {
   font-size: 2.5rem;
@@ -24,19 +25,26 @@
   margin: 0px;
 }
 .profile__picture {
-  height: 100%;
+  height: 100px;
+  width: auto;
   border-radius: var(--default-border-radius);
 }
 
-.profile__button-edit {
+.profile__options {
+  display: flex;
+  flex-direction: row;
+  gap: 1rem;
+}
+.profile__options button {
+  display: none;
   background-color: var(--btn-color-confirm);
-  border: none;
-  width: 50%;
+  transition: 0.2s ease-in;
+  border: var(--btn-color-confirm-2) solid 2px;
+  padding: 0.5em 1.5em;
   margin-bottom: 0.4em;
 }
-.profile__button-edit:hover{
+.profile__options button:hover {
   background-color: var(--btn-color-confirm-2);
-  transition: 0.3s ease-in;
 }
 
 .modal {
@@ -50,14 +58,14 @@
   border-radius: var(--default-border-radius);
   box-shadow: 0px 4px 8px rgba(0,0,0,0.2);
   padding: 20px;
-  z-index: 1000;
+  z-index: 999;
   width: 70%;
   max-width: 900px;
 }
 .modal__form {
   display: grid;
   grid-template-columns: 1fr 2fr;
-  gap: 20px;
+  gap: 10px;
   padding: 20px;
   align-items: center;
 }
@@ -84,9 +92,9 @@ body.modal--visible::before {
   width: 100%;
 }
 .modal__form select:not([multiple]) {
-  appearance: none; 
   -webkit-appearance: none; 
   -moz-appearance: none;
+  appearance: none; 
 }
 .modal__form textarea,
 .modal__form label,
@@ -109,7 +117,12 @@ body.modal--visible::before {
   border-color: var(--btn-color-confirm);
   transition: border-color 0.3s ease;
 }
-.modal__form input#photo {
+.modal__form section {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.modal__form input#input-photo {
   display: none;
 }
 
@@ -125,7 +138,7 @@ body.modal--visible::before {
 .form__button:hover {
   background-color: var(--btn-color-confirm-2);
 }
-.form__button#photo{
+.form__button#photo {
   width: 30%;
 }
 .form__button#save,
@@ -142,6 +155,13 @@ body.modal--visible::before {
   background-color: var(--btn-color-standard-2);
 }
 
+.form__photo-preview {
+  border-radius: var(--default-border-radius);
+  max-height: 45px;
+  width: auto;
+}
+
+
 .form__checkbox-list {
   position: flex;
   display: flex;
@@ -153,12 +173,12 @@ body.modal--visible::before {
   border-width: 0 0 2px;
   border-color: var(--btn-color-standard);
   border-radius: 5px;
-  max-height: 100px; 
+  max-height: 120px; 
   overflow-y: auto;
   overflow-x: hidden;
 }
 .form__checkbox-list label {
-  padding: 5px;
+  padding: 0;
 }
 .form__checkbox-list input {
   position: relative;
@@ -231,15 +251,11 @@ body.modal--visible::before {
   display: none;
   font-size: 1em;
   animation: fadeout 3s forwards;
-  z-index: 999;
+  z-index: 1000;
 }
 
 @keyframes fadeout {
   0% { opacity: 1; }
   90% { opacity: 1; }
   100% { opacity: 0; }
-}
-
-.modal__form .form__checkbox-list input {
-
 }
