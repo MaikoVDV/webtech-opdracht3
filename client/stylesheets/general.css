@@ -7,7 +7,6 @@ body {
   margin: 0px; /* Prevents margins / empty borders appearing around webpage in some browsers */
 
   font-family: "Montserrat", sans-serif;
-  font-optical-sizing: auto;
   font-style: normal;
 
   --btn-color-standard: #EEE;
@@ -32,7 +31,6 @@ button {
 /* Already included in body, but selector doens't apply to some paragraphs, e.g. those inside buttons. */
 p {
   font-family: "Montserrat", sans-serif;
-  font-optical-sizing: auto;
   font-style: normal;
 }
 

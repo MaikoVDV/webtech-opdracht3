@@ -35,7 +35,6 @@ export async function saveChanges() {
 
   if (!first_name || !last_name) return showNotification("First and last names cannot be empty.", "error");
   if (!validateEmail(email)) return showNotification("Please enter a valid email address.", "error");
-  if (!await uniqueEmail(email)) return showNotification("The email address entered is already in use.", "error");
   if (!age || age <= 0) return showNotification("Please enter a valid age greater than 0.", "error");
 
   const body = {
@@ -75,14 +74,10 @@ export function displayDataInModalFields(user) {
   form.querySelector("#email").value = user.email || "";
   form.querySelector("#age").value = user.age || "";
 
+  console.log(user);
   const photoPreview = form.querySelector(".form__photo-preview");
-  if (user.photo) {
-    photoPreview.src = `/api/photo/${user.id}`;
-    photoPreview.style.display = "block";
-  } else {
-    photoPreview.src = "";
-    photoPreview.style.display = "none";
-  }
+
+  photoPreview.src = `/api/photo/${user.id}`;
 
   form.querySelector("#hobbies").value = user.hobbies || "";
   form.querySelector("#program").value = user.program || "";
