@@ -15,6 +15,11 @@ async function loadProfileData() {
     // Request not authorized, ask user to log in again.
     return window.location.href = "/";
   }
+  if (response.status == 404) {
+    // User wasn't found. Simply return. This leaves a broken webpage but no user should normally arrive at an unknown user's page,
+    // so this is really only an eyesore for people trying to subvert our security measures.
+    return;
+  }
   const user = await response.json();
 
   const loggedInUser = await getLoggedInUser();

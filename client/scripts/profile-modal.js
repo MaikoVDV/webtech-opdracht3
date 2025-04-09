@@ -42,7 +42,6 @@ export async function saveChanges() {
     last_name,
     email,
     age,
-    photo: photo?.name || user.photo,
     hobbies: hobbies || null,
     program: program,
     courses: courses.length ? courses.join(", ") : null,
