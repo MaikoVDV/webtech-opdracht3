@@ -1,48 +1,51 @@
 <!DOCTYPE html>
-<html>
-  <head>
-    <title>Chat</title>
-    <link rel="stylesheet" href="/stylesheets/general.css" defer>
-    <link rel="stylesheet" href="/stylesheets/chat.css" defer>
+<html lang="en">
 
-    <script src="/scripts/navbar.js" type="module" defer></script>
-    <script src="/scripts/account-management.js" type="module" defer></script>
-    <script src="/scripts/chat-manager.js" type="module" defer></script>
-  </head>
-  <body>
-    <header>
-      <navbar class="navbar">
-        <ul class="navbar__pages">
-          <li><a href="/">Home</a></li>
-          <li><a href="/users">Profile</a></li>
-          <li><a href="/chat">Chat</a></li>
-          <li><a href="/friends">Friends</a></li>
-        </ul>
-        
-        <ul class="navbar__profile">
+<head>
+  <title>Chat</title>
+  <link rel="stylesheet" href="stylesheets/general.css">
+  <link rel="stylesheet" href="stylesheets/chat.css">
 
-        </ul>
-      </navbar>
-    </header>
-    <main>
-      <!-- <h1>Chat!</h1> -->
-      <aside class="friends-container">
-        <div class="chat-section__header">
-          <h2>Friends</h2>
-        </div>
-        <ul class="friends-list"></ul>
-      </aside>
-      <section class="current-chat">
-        <div class="chat-section__header current-chat__header">
-          <img class="current-chat__photo" src="">
-          <h2 class="current-chat__header">Current conversation</h2>
-        </div>
-        <article class="current-chat__chat-container"></article>
-        <form type="chat-input" class="current-chat__input">
-          <input type="text" class="current-chat__textbox" name="chat-input" placeholder="Type a message">
-          <button type="submit"><p>Send</p></button>
-        </form>
-      </section>
-    </main>
-  </body>
+  <script src="scripts/navbar.js" type="module"></script>
+  <script src="scripts/account-management.js" type="module"></script>
+  <script src="scripts/chat-manager.js" type="module"></script>
+</head>
+
+<body>
+  <header>
+    <nav class="navbar">
+      <ul class="navbar__pages">
+        <li><a href=".">Home</a></li>
+        <li><a href="users">Profile</a></li>
+        <li><a href="chat">Chat</a></li>
+        <li><a href="friends">Friends</a></li>
+      </ul>
+      <ul class="navbar__profile">
+      </ul>
+    </nav>
+  </header>
+  <main>
+    <!-- <h1>Chat!</h1> -->
+    <aside class="friends-container">
+      <div class="chat-section__header">
+        <h2>Friends</h2>
+      </div>
+      <ul class="friends-list"></ul>
+    </aside>
+    <section class="current-chat">
+      <div class="chat-section__header current-chat__header">
+        <img class="current-chat__photo" src="/" alt="Profile picture">
+        <h2 class="current-chat__header">Current conversation</h2>
+      </div>
+      <article class="current-chat__chat-container"></article>
+      <form class="current-chat__input">
+        <input type="text" class="current-chat__textbox" name="chat-input" placeholder="Type a message">
+        <button type="submit">
+          Send
+        </button>
+      </form>
+    </section>
+  </main>
+</body>
+
 </html>

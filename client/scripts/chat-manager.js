@@ -14,9 +14,9 @@ window.addEventListener("load", async () => {
   const friends = await friendsQuery.json();
 
   friends.forEach(friend => {
-    const friendEntry = elementBuilder("li", { class: "friends-list__item"});
-    friendEntry.appendChild(elementBuilder("img", { class: "friends-list__photo", src: `/api/photo/${friend.id}`}));
-    friendEntry.appendChild(elementBuilder("p", { class: "friends-list__name", textContent: `${friend.first_name} ${friend.last_name}`}));
+    const friendEntry = elementBuilder("li", { class: "friends-list__item" });
+    friendEntry.appendChild(elementBuilder("img", { class: "friends-list__photo", src: `/api/photo/${friend.id}` }));
+    friendEntry.appendChild(elementBuilder("p", { class: "friends-list__name", textContent: `${friend.first_name} ${friend.last_name}` }));
     friendEntry.addEventListener("click", () => {
       Array.from(friendsContainer.children).forEach(child => {
         child.classList.remove("friends-list__item--selected");
@@ -66,10 +66,11 @@ async function openChat(friendId) {
         const chatPhoto = document.querySelector(".current-chat__photo");
         chatHeaderText.textContent = `${friendData.first_name} ${friendData.last_name}`;
         chatPhoto.src = `/api/photo/${friendData.id}`;
+        chatPhoto.style.display = "block";
       } catch (ex) {
         console.error("Failed to update chat header.");
       }
-    } else if(friendQuery.status == 401) {
+    } else if (friendQuery.status == 401) {
       // Request not authorized, ask user to log in again.
       return window.location.href = "/";
     }
@@ -86,7 +87,7 @@ async function openChat(friendId) {
     const chatContainer = document.querySelector(".current-chat__chat-container");
     chatContainer.replaceChildren();
     messages.forEach(message => {
-      const messageEl = elementBuilder("div", { class: "current-chat__message"});
+      const messageEl = elementBuilder("div", { class: "current-chat__message" });
       messageEl.appendChild(elementBuilder("p", { class: "current-chat__message-text", textContent: message.content }));
       if (message.sender_id == user.id) messageEl.classList.add("current-chat__message--sent");
       else messageEl.classList.add("current-chat__message--received");
@@ -100,7 +101,7 @@ async function openChat(friendId) {
       }
       const timeString = msgDate.toLocaleTimeString(undefined, timeDisplayOptions);
 
-      messageEl.appendChild(elementBuilder("p", { class: "current-chat__message-date", textContent: timeString}));
+      messageEl.appendChild(elementBuilder("p", { class: "current-chat__message-date", textContent: timeString }));
       chatContainer.appendChild(messageEl);
     });
   } catch (e) {

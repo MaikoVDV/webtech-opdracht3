@@ -56,7 +56,7 @@ main {
   max-height: 3rem;
   border-radius: 100px;
 }
-.current-chat__photo[src=""]{
+.current-chat__photo[src="/"]{
   display: none;
 }
 .current-chat__header--friend-selected:hover {
@@ -120,7 +120,7 @@ main {
   border-radius: var(--default-border-radius);
   outline: var(--btn-color-standard-2) solid 2px;
 }
-.current-chat__input button p {
+.current-chat__input button {
   margin: 0px;
   font-family: "Montserrat", sans-serif;
   font-size: 1rem;

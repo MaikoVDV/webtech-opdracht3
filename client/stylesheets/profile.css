@@ -15,6 +15,7 @@
   display: flex;
   flex-direction: column;
   gap: 0.5em;
+  flex: 1 1 0;
 }
 .profile__fullname {
   font-size: 2.5rem;
@@ -29,13 +30,21 @@
   border-radius: var(--default-border-radius);
 }
 
-.profile__button-edit {
+.profile__options {
+  display: flex;
+  flex-direction: row;
+  gap: 1rem;
+}
+
+.profile__options button {
+  display: none;
   background-color: var(--btn-color-confirm);
-  border: none;
-  width: 35%;
+  transition: 0.2s ease-in;
+  border: var(--btn-color-confirm-2) solid 2px;
+  padding: 0.5em 1.5em;
   margin-bottom: 0.4em;
 }
-.profile__button-edit:hover{
+.profile__options button:hover{
   background-color: var(--btn-color-confirm-2);
   transition: 0.3s ease-in;
 }
@@ -146,16 +155,20 @@ body.modal--visible::before {
   border: none;
   text-align: center;
   transition: background-color 0.3s ease;
-  padding: 15px;
 }
 .form__button:hover {
   background-color: var(--btn-color-confirm-2);
 }
 .form__button#photo {
   width: 30%;
+  height: auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 .form__button#save,
 .form__button#cancel {
+  padding: 15px;
   display: flex;
   justify-content: center;
   gap: 10px;

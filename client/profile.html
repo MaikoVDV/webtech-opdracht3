@@ -1,28 +1,28 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 
 <head>
   <title>Webtech 3</title>
-  <link rel="stylesheet" href="/stylesheets/general.css" defer>
-  <link rel="stylesheet" href="/stylesheets/profile.css" defer>
+  <link rel="stylesheet" href="../stylesheets/general.css">
+  <link rel="stylesheet" href="../stylesheets/profile.css">
 
-  <script src="/scripts/navbar.js" type="module" defer></script>
-  <script src="/scripts/profile.js" type="module" defer></script>
-  <script src="/scripts/profile-modal.js" type="module" defer></script>
+  <script src="../scripts/navbar.js" type="module"></script>
+  <script src="../scripts/profile.js" type="module"></script>
+  <script src="../scripts/profile-modal.js" type="module"></script>
 </head>
 
 <body>
   <header>
-    <navbar class="navbar">
+    <nav class="navbar">
       <ul class="navbar__pages">
-        <li><a href="/">Home</a></li>
-        <li><a href="/users/">Profile</a></li>
-        <li><a href="/chat">Chat</a></li>
-        <li><a href="/friends">Friends</a></li>
+        <li><a href="../">Home</a></li>
+        <li><a href="users/">Profile</a></li>
+        <li><a href="chat">Chat</a></li>
+        <li><a href="friends">Friends</a></li>
       </ul>
 
       <ul class="navbar__profile"></ul> <!-- Filled by navbar.js -->
-    </navbar>
+    </nav>
   </header>
   <main>
     <div class="notification"></div>
@@ -44,8 +44,8 @@
 
         <label for="input-photo">Profile picture:</label>
         <section>
-          <button type="button" class="form__button" id="photo">Upload Photo</button>
-          <img class="form__photo-preview" src="" alt="Selected Photo">
+          <button type="button" class="form__button" id="photo">Upload photo</button>
+          <img class="form__photo-preview" src="/" alt="Selected Photo">
         </section>
         <input type="file" id="input-photo" accept="image/*">
 
@@ -54,6 +54,7 @@
 
         <label for="program">Program/Major:</label>
         <select id="program" required>
+          <option value="" disabled selected>...</option>
           <option value="Computer Science">Computer Science</option>
           <option value="Game Technology">Game Technology</option>
         </select>
@@ -108,7 +109,7 @@
           <p class="profile__bio-data" id="program-display">Program</p>
           <button class="profile__button-edit">Edit my profile</button>
         </section>
-        <img class="profile__picture">
+        <img class="profile__picture" src="/" alt="Profile picture">
       </section>
       <section class="profile__friends">
         <h2 class="profile__sec-header" id="friends">Friends</h2>
@@ -121,7 +122,7 @@
       <div class="modal" id="course">
         <div class="modal__content">
           <span class="modal__button-close">&times;</span>
-          <h2 class="modal__title"></h2>
+          <h2 class="modal__title">Course Title</h2>
           <p class="modal__description"></p>
           <p><strong>Teacher:</strong> <span class="modal__teacher"></span></p>
           <p><strong>Students:</strong></p>

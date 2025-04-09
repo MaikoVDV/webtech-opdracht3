@@ -1,29 +1,29 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 
 <head>
   <title>Register</title>
-  <link rel="stylesheet" href="/stylesheets/general.css" defer>
-  <link rel="stylesheet" href="/stylesheets/index.css" defer>
-  <link rel="stylesheet" href="/stylesheets/profile_form.css" defer>
+  <link rel="stylesheet" href="stylesheets/general.css">
+  <link rel="stylesheet" href="stylesheets/index.css">
+  <link rel="stylesheet" href="stylesheets/profile_form.css">
 
-  <script src="/scripts/navbar.js" type="module" defer></script>
-  <script src="/scripts/register.js" type="module" defer></script>
-  <script src="/scripts/account-management.js" type="module" defer></script>
+  <script src="scripts/navbar.js" type="module"></script>
+  <script src="scripts/register.js" type="module"></script>
+  <script src="scripts/account-management.js" type="module"></script>
 </head>
 
 <body>
   <header>
-    <navbar class="navbar">
+    <nav class="navbar">
       <ul class="navbar__pages">
-        <li><a href="/">Home</a></li>
-        <li><a href="/users/">Profile</a></li>
-        <li><a href="/chat">Chat</a></li>
-        <li><a href="/friends">Friends</a></li>
+        <li><a href=".">Home</a></li>
+        <li><a href="users/">Profile</a></li>
+        <li><a href="chat">Chat</a></li>
+        <li><a href="friends">Friends</a></li>
       </ul>
       <ul class="navbar__profile">
       </ul>
-    </navbar>
+    </nav>
   </header>
   <main>
     <!-- Form submission handled by account-management.js -->
@@ -48,8 +48,8 @@
 
         <label for="input-photo">Profile picture:</label>
         <section>
-          <button type="button" class="form__button" id="photo">Upload Photo</button>
-          <img class="form__photo-preview" src="" alt="Selected Photo">
+          <button type="button" class="form__button" id="photo">Upload photo</button>
+          <img class="form__photo-preview" src="/" alt="Selected Photo">
         </section>
         <input type="file" id="input-photo" accept="image/*">
 
@@ -57,7 +57,8 @@
         <input type="text" id="hobbies">
 
         <label for="program">Program/Major:</label>
-        <select id="program" value="" required>
+        <select id="program" required>
+          <option value="" disabled selected>Select a program</option>
           <option value="Computer Science">Computer Science</option>
           <option value="Game Technology">Game Technology</option>
         </select>
@@ -97,11 +98,10 @@
             <input type="checkbox" value="graphics">
           </label>
         </div>
-
         <a href="/">
-          <button type="button" class="form__button" id="cancel">Cancel</button>
+          <p class="form__button" id="cancel">Cancel</p>
         </a>
-        <button type="button" class="form__button" id="submit">Register</button>
+        <p class="form__button" id="submit">Register</p>
       </form>
     </div>
   </main>

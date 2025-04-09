@@ -68,7 +68,7 @@
   z-index: 999;
   width: 90%;
   max-width: 900px;
-  max-height: 70vh;
+  max-height: 85vh;
   overflow-y: auto; 
   scrollbar-width: none;
 }
@@ -130,7 +130,6 @@
 }
 
 .form__button {
-  padding: 10px 15px;
   font-size: 1em;
   background-color: var(--btn-color-standard);
   border: none;
@@ -144,16 +143,16 @@
 }
 .form__button#photo {
   width: 30%;
+  height: auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
-
-a {
-  text-decoration: none;
-}
-
 .form__button#submit,
 .form__button#cancel {
+  padding: 10px 15px;
   display: flex;
-  width: 100%;
+  width: 90%;
   text-decoration: none;
   justify-content: center;
   gap: 10px;
@@ -162,6 +161,23 @@ a {
   border: none;
   cursor: pointer;
 }
+.form__button#submit{
+  width: 95%;
+}
+
+a {
+  color:black;
+  text-decoration: none;
+}
+
+.register__form section {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: auto;
+  height: 50px;
+}
+
 .form__button#cancel:hover {
   background-color: var(--btn-color-standard-2);
 }
@@ -169,8 +185,8 @@ a {
 .form__photo-preview {
   display: none;
   border-radius: var(--default-border-radius);
-  max-height: 45px;
-  width: auto;
+  max-width: 50px;
+  max-height: 50px;
 }
 
 .form__checkbox-list {

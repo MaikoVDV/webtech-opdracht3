@@ -1,46 +1,50 @@
 <!DOCTYPE html>
-<html>
-  <head>
-    <title>Webtech 3</title>
-    <link rel="stylesheet" href="/stylesheets/general.css" defer>
-    <link rel="stylesheet" href="/stylesheets/index.css" defer>
-    <link rel="stylesheet" href="/stylesheets/profile_form.css" defer>
+<html lang="en">
 
-    <script src="/scripts/navbar.js" type="module" defer></script>
-    <script src="/scripts/account-management.js" type="module" defer></script>
-  </head>
-  <body>
-    <header>
-      <navbar class="navbar">
-        <ul class="navbar__pages">
-          <li><a href="/">Home</a></li>
-          <li><a href="/users">Profile</a></li>
-          <li><a href="/chat">Chat</a></li>
-          <li><a href="/friends">Friends</a></li>
-        </ul>
-        
-        <ul class="navbar__profile">
+<head>
+  <title>Webtech 3</title>
+  <link rel="stylesheet" href="stylesheets/general.css">
+  <link rel="stylesheet" href="stylesheets/index.css">
+  <link rel="stylesheet" href="stylesheets/profile_form.css">
 
-        </ul>
-      </navbar>
-    </header>
-    <main>
-      <!-- Form submission handled by acount-management.js -->
-      <form id="login-form" class="profile-form">
-        <h2 class="profile-form__title">Login</h2>
-        <p class="profile-form__error-message"></p>
-        <div class="profile-form__item">
-          <label for="profile-login-form__email">E-mail</label>
-          <input class="profile-form__text" id="login-form__email" name="email" type="text">
-        </div>
-        <div class="profile-form__item">
-          <label for="profile-login-form__password">Password</label>
-          <input class="profile-form__text" id="login-form__password" name="password" type="text">
-        </div>
-        <button class="profile-form__submit" type="submit"><span>Login</span></button>
-        <p class="profile-form__subtext">Don't have an account yet? <a class="profile-form__link" href="/register">Register</a></p>
-      </form>
+  <script src="scripts/navbar.js" type="module"></script>
+  <script src="scripts/account-management.js" type="module"></script>
+</head>
 
-    </main>
-  </body>
+<body>
+  <header>
+    <nav class="navbar">
+      <ul class="navbar__pages">
+        <li><a href=".">Home</a></li>
+        <li><a href="users">Profile</a></li>
+        <li><a href="chat">Chat</a></li>
+        <li><a href="friends">Friends</a></li>
+      </ul>
+
+      <ul class="navbar__profile">
+
+      </ul>
+    </nav>
+  </header>
+  <main>
+    <!-- Form submission handled by acount-management.js -->
+    <form id="login-form" class="profile-form">
+      <h2 class="profile-form__title">Login</h2>
+      <p class="profile-form__error-message"></p>
+      <div class="profile-form__item">
+        <label for="login-form__email">E-mail</label>
+        <input class="profile-form__text" id="login-form__email" name="email" type="text">
+      </div>
+      <div class="profile-form__item">
+        <label for="login-form__password">Password</label>
+        <input class="profile-form__text" id="login-form__password" name="password" type="text">
+      </div>
+      <button class="profile-form__submit" type="submit"><span>Login</span></button>
+      <p class="profile-form__subtext">Don't have an account yet? <a class="profile-form__link"
+          href="/register">Register</a></p>
+    </form>
+
+  </main>
+</body>
+
 </html>
