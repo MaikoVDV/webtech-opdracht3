@@ -9,7 +9,7 @@ export function closeEditModal() {
 }
 
 export function onPhotoButtonClick() {
-  document.querySelector(".modal__form input#input-photo").click();
+  document.querySelector("input#input-photo").click();
 }
 
 export async function saveChanges() {
@@ -19,8 +19,8 @@ export async function saveChanges() {
 
   const form = document.querySelector(".modal__form");
 
-  const firstName = form.querySelector("#first-name").value.trim();
-  const lastName = form.querySelector("#last-name").value.trim();
+  const first_name = form.querySelector("#first-name").value.trim();
+  const last_name = form.querySelector("#last-name").value.trim();
   const email = form.querySelector("#email").value.trim();
   const age = parseInt(form.querySelector("#age").value.trim(), 10);
   const photo = form.querySelector("#input-photo").files[0];
@@ -29,18 +29,19 @@ export async function saveChanges() {
   const courses = Array.from(form.querySelectorAll(".form__checkbox-list input:checked"))
     .map(checkbox => checkbox.value);
 
-  if (!firstName || !lastName) return showNotification("First and last names cannot be empty.", "error");
+  if (!first_name || !last_name) return showNotification("First and last names cannot be empty.", "error");
   if (!validateEmail(email)) return showNotification("Please enter a valid email address.", "error");
+  if (!await uniqueEmail(email)) return showNotification("The email address entered is already in use.", "error");
   if (!age || age <= 0) return showNotification("Please enter a valid age greater than 0.", "error");
 
   const body = {
-    firstName,
-    lastName,
+    first_name,
+    last_name,
     email,
     age,
     photo: photo?.name || user.photo,
     hobbies: hobbies || null,
-    program: program || null,
+    program: program,
     courses: courses.length ? courses.join(", ") : null,
   };
 
@@ -94,6 +95,7 @@ export function onModalPhotoChange(input) {
     reader.onload = function (e) {
       const preview = document.querySelector(".form__photo-preview");
       preview.src = e.target.result;
+      preview.style.display = "block";
     };
     reader.readAsDataURL(file);
   };
@@ -114,4 +116,3 @@ function showNotification(message, type) {
     notification.style.display = "none";
   }, 3000);
 };
-

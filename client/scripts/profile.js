@@ -55,6 +55,8 @@ async function loadProfileData() {
 
   document.querySelector("#email-display").textContent = `E-mail: ${user.email}`;
   document.querySelector("#age-display").textContent = `Age: ${user.age}`;
+  document.querySelector("#hobbies-display").textContent = `Hobbies: ${user.hobbies ?? ""}`;
+  document.querySelector("#program-display").textContent = `Program: ${user.program}`;
 
   const pictureDisplay = document.querySelector(".profile__picture");
   pictureDisplay.src = `/api/photo/${userId}`;
@@ -73,6 +75,10 @@ async function loadProfileData() {
   if (friendsQuery.ok) {
     const friendsContainer = document.querySelector("#friends-container");
     const friends = await friendsQuery.json();
+
+    const friendsHeader = document.querySelector(".profile__sec-header#friends");
+    friendsHeader.textContent += ` (${friends.length})`;
+    
     friends.forEach(friend => {
       let friendItem = friendsContainer.appendChild(elementBuilder("li", {
         class: "profile__list-item"
@@ -83,12 +89,12 @@ async function loadProfileData() {
     });
   }
 
+
   // Display the student's taken courses
   const coursesQuery = await fetch(`/api/users/${userId}/courses`);
   if (coursesQuery.ok) {
     const coursesContainer = document.querySelector("#courses-container");
     const courses = await coursesQuery.json();
-
     courses.forEach(course => {
       let courseItem = coursesContainer.appendChild(elementBuilder("li", {
         class: "profile__list-item course-item"

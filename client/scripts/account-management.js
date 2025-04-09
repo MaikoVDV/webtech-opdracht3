@@ -38,34 +38,117 @@ window.addEventListener("load", () => {
           loginForm.querySelector(".profile-form__error-message").textContent = result.error;
         }
       });
-    } catch (exception) {}
+    } catch (exception) { }
   }
   if (window.location.pathname == "/register") {
     try {
-      const registerForm = document.getElementById("register-form");
-      registerForm.addEventListener("submit", async (event) => {
-        event.preventDefault();
+      const registerForm = document.querySelector(".form__button#submit");
+      registerForm.addEventListener("click", async () => {
 
-        const formData = new FormData(registerForm);
-        // const data = Object.fromEntries(formData.entries());
-        // console.log("Submitted!");
+        const jsonData = getRegisterFormData();
+        if (!jsonData) return;
+
+        const formData = new FormData();
+        for (const key in jsonData) {
+          if (Array.isArray(jsonData[key])) {
+            jsonData[key].forEach((item, index) => {
+              formData.append(`${key}[${index}]`, item);
+            });
+          } else {
+            formData.append(key, jsonData[key]);
+          };
+        };
 
         const res = await fetch("/api/register", {
           method: "POST",
-          // headers: { "Content-Type": "multipart/form-data" },
           body: formData
         });
 
-        console.log(res);
         if (res.ok) {
           // Login was successful
-          // window.location.replace("/users/");
+          window.location.replace("/users/");
         } else {
           // Login was unsuccessful, display error message.
           const result = await res.json();
-          registerForm.querySelector(".profile-form-error__message").textContent = result.error;
+          showNotification(result.error, "error");
         }
       });
     } catch (exception) { }
   }
 });
+
+function getRegisterFormData() {
+  const form = document.querySelector(".register__form");
+
+  const first_name = form.querySelector("#first-name").value.trim();
+  const last_name = form.querySelector("#last-name").value.trim();
+  const email = form.querySelector("#email").value.trim();
+  const password = form.querySelector("#password").value;
+  const age = parseInt(form.querySelector("#age").value.trim(), 10);
+  const photo = form.querySelector("#input-photo").files[0];
+  const hobbies = form.querySelector("#hobbies").value.trim();
+  const program = form.querySelector("#program").value;
+  const courses = Array.from(form.querySelectorAll(".form__checkbox-list input:checked"))
+    .map(checkbox => checkbox.value);
+
+  const passwordCheck = validatePassword(password);
+
+  if (!passwordCheck.valid) return showNotification(passwordCheck.errors.join("\n"), "error");
+  if (!first_name || !last_name) return showNotification("First and last names cannot be empty.", "error");
+  if (!validateEmail(email)) return showNotification("Please enter a valid email address.", "error");
+  if (!age || age <= 0) return showNotification("Please enter a valid age greater than 0.", "error");
+
+  const body = {
+    first_name,
+    last_name,
+    email,
+    password,
+    age,
+    photo: photo || "",
+    hobbies: hobbies || null,
+    program: program,
+    courses: courses.length ? courses.join(", ") : null,
+  };
+
+  return body;
+};
+
+function validateEmail(email) {
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  return emailRegex.test(email);
+};
+
+function validatePassword(password) {
+  const errors = [];
+
+  if (password.length < 8) {
+    errors.push("Password must be at least 8 characters long.");
+  }
+  if (!/[A-Z]/.test(password)) {
+    errors.push("Password must contain at least one uppercase letter.");
+  }
+  if (!/[a-z]/.test(password)) {
+    errors.push("Password must contain at least one lowercase letter.");
+  }
+  if (!/[0-9]/.test(password)) {
+    errors.push("Password must contain at least one digit.");
+  }
+  if (!/[!@#$%^&*(),.?":{}|<>]/.test(password)) {
+    errors.push("Password must contain at least one special character.");
+  }
+
+  return errors.length === 0
+    ? { valid: true, message: "Password is valid." }
+    : { valid: false, errors: errors };
+}
+
+function showNotification(message, type) {
+  const notification = document.querySelector(".notification");
+  notification.innerText = message;
+  notification.style.backgroundColor = type === "success" ? "#4caf50" : "#f44336";
+  notification.style.display = "block";
+
+  setTimeout(() => {
+    notification.style.display = "none";
+  }, 3000);
+};
