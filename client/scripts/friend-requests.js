@@ -16,8 +16,6 @@ async function updateFriendRequestList() {
   });
   const requests = await requestsQuery.json();
   try {
-    console.log(requests);
-
     const receivedReqsContainer = document.querySelector("#received-friend-requests-container");
     receivedReqsContainer.replaceChildren();
     // Sorts received requests with pending requests at the top.
@@ -96,7 +94,7 @@ async function updateFriendRequestList() {
       sentReqsContainer.appendChild(requestItem);
     });
   } catch (e) {
-    console.log(e);
+    console.error(e);
     if (requestsQuery.status == 401) {
       return window.location.href = "/";
     }

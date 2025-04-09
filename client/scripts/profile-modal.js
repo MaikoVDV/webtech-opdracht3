@@ -73,7 +73,6 @@ export function displayDataInModalFields(user) {
   form.querySelector("#email").value = user.email || "";
   form.querySelector("#age").value = user.age || "";
 
-  console.log(user);
   const photoPreview = form.querySelector(".form__photo-preview");
 
   photoPreview.src = `/api/photo/${user.id}`;

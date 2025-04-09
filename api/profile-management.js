@@ -13,10 +13,9 @@ export async function updateUserInfo(req, res) {
   SET first_name = ?, last_name = ?, email = ?, age = ?, hobbies = ?, program = ?, courses = ? 
   WHERE id = ?;
   `;
-  console.log(req.body);
 
   await db.run(query, values).catch((error) => {
-    console.log(error);
+    console.error(error);
     res.status(500).json({ error: "Failed to update user information." });
     return;
   });
