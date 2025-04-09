@@ -40,7 +40,6 @@ export const updateFriendshipHandler = async (req, res) => {
     }
     return res.status(200).send();
   } catch (e) {
-    console.log("hey");
     console.error(e);
     return res.status(500).json({ error: "Failed to send friend request due to an unknown server error. Please try again later."});
   }
