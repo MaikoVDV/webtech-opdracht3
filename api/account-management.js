@@ -16,11 +16,11 @@ export const loginRouteHandler = async (req, res) => {
   const db = await connectDB();
   const { email, password } = req.body;
   if (email == null || email == "") {
-    res.status(401).json({error: "Please enter an e-mail address."});
+    res.status(401).json({ error: "Please enter an e-mail address." });
     return;
   }
   if (password == null || password == "") {
-    res.status(401).json({error: "Please enter a password."});
+    res.status(401).json({ error: "Please enter a password." });
     return;
   }
 
@@ -37,18 +37,31 @@ export const loginRouteHandler = async (req, res) => {
       }
       res.status(200).send();
     } else {
-      res.status(401).json({error: "Incorrect combination of email and password."});
+      res.status(401).json({ error: "Incorrect combination of email and password." });
     }
   } else {
-    res.status(401).json({error: "Incorrect combination of email and password."});
+    res.status(401).json({ error: "Incorrect combination of email and password." });
   }
 };
 
 const insertUserQuery = `
-INSERT INTO Students (email, first_name, last_name, age, photo, password)
-VALUES (?, ?, ?, ?, ?, ?);
+INSERT INTO Students (email, first_name, last_name, age, photo, password, hobbies, program, courses)
+VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?);
+`;
+const uniqueEmailQuery = `
+SELECT CASE 
+WHEN EXISTS (SELECT 1 FROM Students WHERE email = ?) 
+THEN FALSE
+ELSE TRUE
+END;
 `;
 export const registerRouteHandler = async (req, res) => {
+  const db = await connectDB();
+  const { email } = req.body;
+  const user = await db.get(uniqueEmailQuery, email);
+
+  if (user) return res.status(409).json({ error: "The given email address is already in use." });
+
   const busboy = Busboy({ headers: req.headers });
 
   // Process multipart form data with busboy - necessary because data consists of text as well as image data.
@@ -74,13 +87,14 @@ export const registerRouteHandler = async (req, res) => {
   // After form data processing is finished, update the database.
   busboy.on("finish", async () => {
     try {
+      console.log(parsedData);
       const hashedPassword = await bcrypt.hash(parsedData.password, 12);
 
       const photoname = `${Date.now()}-${photo.name}`;
 
       // Insert database entry
       const db = await connectDB();
-      await db.run(insertUserQuery, [parsedData.email, parsedData.first_name, parsedData.last_name, parsedData.age, photoname, hashedPassword]);
+      await db.run(insertUserQuery, [parsedData.email, parsedData.first_name, parsedData.last_name, parsedData.age, photoname, hashedPassword, parsedData.hobbies, parsedData.program, parsedData.courses]);
 
       const getUserQuery = `SELECT * FROM Students WHERE email = ?;`;
       const userData = await db.get(getUserQuery, parsedData.email);
@@ -97,14 +111,14 @@ export const registerRouteHandler = async (req, res) => {
       fs.writeFile(savepath, photo.buffer, err => {
         if (err) {
           console.log(err);
-          return res.status(500).json({error: "Failed to process submitted data."});
+          return res.status(500).json({ error: "Failed to process submitted data." });
         }
       });
 
       res.status(200).send();
     } catch (exception) {
       console.error(exception);
-      res.status(500).json({error: "Failed to register account."});
+      res.status(500).json({ error: "Failed to register account." });
     }
   })
   req.pipe(busboy);
@@ -130,5 +144,5 @@ export const checkLoggedIn = (req, res, next) => {
   if (req.session && req.session.user) {
     return next();
   }
-  return res.status(401).json({error: "Failed to process request, not logged in."});
+  return res.status(401).json({ error: "Failed to process request, not logged in." });
 }

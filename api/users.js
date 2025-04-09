@@ -32,7 +32,7 @@ export const getProfilePhoto = async (req, res) => {
     const db = await connectDB();
     const { id } = req.params;
     let pictureQuery = await db.get(`SELECT photo FROM Students WHERE id = ?`, id);
-    res.sendFile(path.join(__dirname, `assets/profile_pics/${pictureQuery.photo ? pictureQuery.photo : "default.png"}`));
+    res.sendFile(path.join(__dirname, `assets/profile_pics/${pictureQuery ? pictureQuery.photo : "default.png"}`));
   } catch (e) {
     console.error(`Failed to serve profile photo: ${e}`);
   }

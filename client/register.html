@@ -1,58 +1,110 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <title>Register</title>
-    <link rel="stylesheet" href="/stylesheets/general.css" defer>
-    <link rel="stylesheet" href="/stylesheets/index.css" defer>
-    <link rel="stylesheet" href="/stylesheets/profile_form.css" defer>
 
-    <script src="/scripts/navbar.js" type="module" defer></script>
-    <script src="/scripts/account-management.js" type="module" defer></script>
-  </head>
-  <body>
-    <header>
-      <navbar class="navbar">
-        <ul class="navbar__pages">
-          <li><a href="/">Home</a></li>
-          <li><a href="/users/">Profile</a></li>
-          <li><a href="/chat">Chat</a></li>
-          <li><a href="/friends">Friends</a></li>
-        </ul>
-        <ul class="navbar__profile">
-        </ul>
-      </navbar>
-    </header>
-    <main>
-      <!-- Form submission handled by acount-management.js -->
-      <form id="register-form" class="profile-form">
-        <h2 class="profile-form__title">Register</h2>
-        <p class="profile-form__error-message"></p>
-        <div class="profile-form__item">
-          <label for="profile-login-form__first-name">First name</label>
-          <input class="profile-form__text" id="register-form__first-name" name="first_name" type="text">
+<head>
+  <title>Register</title>
+  <link rel="stylesheet" href="/stylesheets/general.css" defer>
+  <link rel="stylesheet" href="/stylesheets/index.css" defer>
+  <link rel="stylesheet" href="/stylesheets/profile_form.css" defer>
+
+  <script src="/scripts/navbar.js" type="module" defer></script>
+  <script src="/scripts/register.js" type="module" defer></script>
+  <script src="/scripts/account-management.js" type="module" defer></script>
+</head>
+
+<body>
+  <header>
+    <navbar class="navbar">
+      <ul class="navbar__pages">
+        <li><a href="/">Home</a></li>
+        <li><a href="/users/">Profile</a></li>
+        <li><a href="/chat">Chat</a></li>
+        <li><a href="/friends">Friends</a></li>
+      </ul>
+      <ul class="navbar__profile">
+      </ul>
+    </navbar>
+  </header>
+  <main>
+    <!-- Form submission handled by account-management.js -->
+    <div class="notification"></div>
+    <div class="register">
+      <h2>Register new user</h2>
+      <form class="register__form">
+        <label for="first-name">First name:</label>
+        <input type="text" id="first-name" required>
+
+        <label for="last-name">Last name:</label>
+        <input type="text" id="last-name" required>
+
+        <label for="email">Email address:</label>
+        <input type="email" id="email" required>
+
+        <label for="password">Password:</label>
+        <input type="text" id="password" required>
+
+        <label for="age">Age:</label>
+        <input type="number" id="age" min="1" required>
+
+        <label for="input-photo">Profile picture:</label>
+        <section>
+          <button type="button" class="form__button" id="photo">Upload Photo</button>
+          <img class="form__photo-preview" src="" alt="Selected Photo">
+        </section>
+        <input type="file" id="input-photo" accept="image/*">
+
+        <label for="hobbies">Hobbies:</label>
+        <input type="text" id="hobbies">
+
+        <label for="program">Program/Major:</label>
+        <select id="program" value="" required>
+          <option value="Computer Science">Computer Science</option>
+          <option value="Game Technology">Game Technology</option>
+        </select>
+
+        <label>Courses:</label>
+        <div class="form__checkbox-list">
+          <label class="form__checkbox-label">
+            Web Technology
+            <input type="checkbox" value="web-tech">
+          </label>
+          <label class="form__checkbox-label">
+            Databases
+            <input type="checkbox" value="databases">
+          </label>
+          <label class="form__checkbox-label">
+            Logic
+            <input type="checkbox" value="logic">
+          </label>
+          <label class="form__checkbox-label">
+            Imperative Programming
+            <input type="checkbox" value="programming">
+          </label>
+          <label class="form__checkbox-label">
+            Computer Architecture & Networks
+            <input type="checkbox" value="comp-arch">
+          </label>
+          <label class="form__checkbox-label">
+            Computer Science Introduction Project
+            <input type="checkbox" value="inca-intro">
+          </label>
+          <label class="form__checkbox-label">
+            Datastructures
+            <input type="checkbox" value="datastruc">
+          </label>
+          <label class="form__checkbox-label">
+            Graphics
+            <input type="checkbox" value="graphics">
+          </label>
         </div>
-        <div class="profile-form__item">
-          <label for="profile-login-form__last-name">Last name</label>
-          <input class="profile-form__text" id="register-form__last-name" name="last_name" type="text">
-        </div>
-        <div class="profile-form__item">
-          <label for="profile-login-form__age">Age</label>
-          <input class="profile-form__text" id="register-form__age" name="age" type="text">
-        </div>
-        <div class="profile-form__item">
-          <label for="profile-login-form__photo">Profile picture</label>
-          <input class="profile-form__text" id="register-form__photo" name="photo" type="file" accept="image/*">
-        </div>
-        <div class="profile-form__item">
-          <label for="profile-login-form__email">E-mail</label>
-          <input class="profile-form__text" id="register-form__email" name="email" type="text">
-        </div>
-        <div class="profile-form__item">
-          <label for="profile-login-form__password">Password</label>
-          <input class="profile-form__text" id="register-form__password" name="password" type="text">
-        </div>
-        <button class="profile-form__submit" type="submit">Register</button>
+
+        <a href="/">
+          <button type="button" class="form__button" id="cancel">Cancel</button>
+        </a>
+        <button type="button" class="form__button" id="submit">Register</button>
       </form>
-    </main>
-  </body>
+    </div>
+  </main>
+</body>
+
 </html>

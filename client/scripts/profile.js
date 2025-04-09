@@ -3,17 +3,14 @@ import { openEditModal, closeEditModal, saveChanges, onPhotoButtonClick, onModal
 import { getLoggedInUser } from "./account-management.js";
 
 async function loadProfileData() {
-  const userId = window.location.pathname.split('/').pop(); // Get username from URL
+  const userId = window.location.pathname.split('/').pop();
   const response = await fetch(`/api/users/${userId}`);
   const user = await response.json();
 
   const loggedInUser = await getLoggedInUser();
   if (!loggedInUser) return;
 
-  console.log(userId, loggedInUser.id);
-
   if (userId != loggedInUser.id) {
-    console.log("hi");
     const profileEditButton = document.querySelector(".profile__button-edit");
     profileEditButton.style.display = "none";
   };
@@ -23,6 +20,8 @@ async function loadProfileData() {
 
   document.querySelector("#email-display").textContent = `E-mail: ${user.email}`;
   document.querySelector("#age-display").textContent = `Age: ${user.age}`;
+  document.querySelector("#hobbies-display").textContent = `Hobbies: ${user.hobbies ?? ""}`;
+  document.querySelector("#program-display").textContent = `Program: ${user.program}`;
 
   const pictureDisplay = document.querySelector(".profile__picture");
   pictureDisplay.src = `/api/photo/${userId}`;
@@ -41,20 +40,27 @@ async function loadProfileData() {
   const friendsQuery = await fetch(`/api/users/${userId}/friends`);
   const friends = await friendsQuery.json();
 
-  friends.forEach(friend => {
+  const friendsHeader = document.querySelector(".profile__sec-header#friends");
+  friendsHeader.textContent += ` (${friends.length})`;
+
+  for (const friend of friends) {
     let friendItem = friendsContainer.appendChild(elementBuilder("li", {
       class: "profile__list-item"
     }));
     friendItem.appendChild(elementBuilder("p", {
       textContent: friend.first_name
     }));
-  });
+  };
 
   const coursesContainer = document.querySelector("#courses-container");
   const coursesQuery = await fetch(`/api/users/${userId}/courses`);
   const courses = await coursesQuery.json();
 
-  courses.forEach(course => {
+  const coursesHeader = document.querySelector(".profile__sec-header#courses");
+  coursesHeader.textContent += ` (${courses.length})`;
+
+
+  for (const course of courses) {
     let courseItem = coursesContainer.appendChild(elementBuilder("li", {
       class: "profile__list-item course-item"
     }));
@@ -78,6 +84,6 @@ async function loadProfileData() {
       class: "course-item__participants-button",
       textContent: `${course.teacher_first_name} ${course.teacher_last_name}`
     }));
-  });
+  };
 }
 loadProfileData();
