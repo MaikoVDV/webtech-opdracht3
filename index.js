@@ -1,12 +1,14 @@
 import { initDB, SqliteStore } from "./connect-database.js";
-import { loginRouteHandler, registerRouteHandler, getLoggedInUser, checkLoggedIn } from "./api/account-management.js";
+import { loginRouteHandler, registerRouteHandler, getLoggedInUser, checkLoggedIn, checkIsLoggedInUser, checkShareCourses, checkAreFriends } from "./api/account-management.js";
 import { getUser, getProfilePhoto, getFriends, getCourses, getCourseParticipants } from "./api/users.js";
-import { addFriendHandler, getFriendReqsHandler, respondFriendReqHandler } from "./api/friends.js";
+import { updateFriendshipHandler, getFriendReqsHandler, respondFriendReqHandler } from "./api/friends.js";
 import { getChatHandler, sendMessageHandler } from "./api/chat.js";
 import { updateUserInfo } from "./api/profile-management.js";
 
 import fs from "fs";
 import express from "express";
+import dotenv from "dotenv";
+import morgan from "morgan";
 import session from "express-session";
 import bcrypt from "bcrypt";
 import path from "path";
@@ -17,6 +19,7 @@ import { body, check, param, validationResult } from "express-validator"; // Val
 export const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const app = express();
 const port = 8010;
+const basepath = process.env.BASE_PATH || "";
 
 // Make sure asset directories are present
 if (!fs.existsSync(path.join(__dirname, "assets"))) {
@@ -40,8 +43,13 @@ await initDB();
 
 // Add middleware.
 app.use(express.json());
+app.use(morgan('combined'));
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(session(sessionOptions));
+// Middlewares below add values to res.locals for routes to respond differently given auth conditions
+app.param("id", checkIsLoggedInUser);
+app.param("id", checkAreFriends);
+app.param("id", checkShareCourses);
 
 // Necessary to send CSS and client JS. Exposes some routes like /index.js that would normally be
 // at /, but that poses no security risks and comes at no inconvenience to the end user,
@@ -49,20 +57,20 @@ app.use(session(sessionOptions));
 app.use(express.static("client"));
 
 // == CLIENT ROUTES ==
-app.get("/", (req, res) => {
+app.get(basepath, (req, res) => {
   res.sendFile(path.join(__dirname, "client/index.html"));
 });
-app.get("/register", (req, res) => {
+app.get(`${basepath}/register`, (req, res) => {
   res.sendFile(path.join(__dirname, "client/register.html"));
 });
-app.get("/chat", (req, res) => {
+app.get(`${basepath}/chat`, (req, res) => {
   res.sendFile(path.join(__dirname, "client/chat.html"));
 });
-app.get("/friends", (req, res) => {
+app.get(`${basepath}/friends`, (req, res) => {
   res.sendFile(path.join(__dirname, "/client/friend-requests.html"));
 });
 
-app.get("/users", async (req, res) => {
+app.get(`${basepath}/users`, async (req, res) => {
   // If logged in, redirect to own user's page.
   if (req.session.user) {
     res.redirect(`/users/${req.session.user.id}`);
@@ -71,51 +79,75 @@ app.get("/users", async (req, res) => {
   }
 });
 
-app.get("/users/:id", async (req, res) => {
+app.get(`${basepath}/users/:id`, async (req, res) => {
   res.sendFile(path.join(__dirname, "client/profile.html"));
 });
 
 // == API ROUTES --
 // User information
-app.get("/api/users/:id", checkLoggedIn, getUser);
-app.get("/api/users/:id/friends", checkLoggedIn, getFriends);
-app.get("/api/users/:id/courses", checkLoggedIn, getCourses);
-app.get("/api/users/:id/:course_id/participants", checkLoggedIn, getCourseParticipants);
-app.get("/api/photo/:id", [ /// TODO: ADD FRIENDSHIP / SAME COURSE CHECK
+app.get(`${basepath}/api/users/:id`, [ 
   checkLoggedIn,
-  param("id").trim().notEmpty().isInt()
+  param("id").trim().isInt().withMessage("Invalid user ID given.").toInt(),
+], getUser);
+app.get(`${basepath}/api/users/:id/friends`, [
+  checkLoggedIn,
+  param("id").trim().isInt().withMessage("Invalid user ID given.").toInt(),
+], getFriends);
+app.get(`${basepath}/api/users/:id/courses`, [
+  checkLoggedIn,
+  param("id").trim().isInt().withMessage("Invalid user ID given.").toInt(),
+], getCourses);
+app.get("/api/users/:id/:course_id/participants", [
+  checkLoggedIn,
+  param("id").trim().isInt().withMessage("Invalid user ID given.").toInt(),
+  param("course_id").trim().isInt().withMessage("Invalid course ID given.").toInt(),
+], getCourseParticipants);
+app.get(`${basepath}/api/photo/:id`, [
+  checkLoggedIn,
+  param("id").trim().isInt().withMessage("Invalid user ID given.").toInt(),
 ], getProfilePhoto);
 
 // Friends
-app.post("/api/friend-requests/:target_id", [
+app.post(`${basepath}/api/friend-requests/:id`, [
   checkLoggedIn,
-  param("friend_id").trim().notEmpty().isInt()
-], addFriendHandler);
-app.get("/api/friend-requests", checkLoggedIn, getFriendReqsHandler);
-app.post("/api/friend-requests/:sender_id/respond", [
+  param("id").trim().isInt().withMessage("Invalid user ID given.").toInt(),
+  body("action").trim().isString().notEmpty().withMessage("No action given."),
+], updateFriendshipHandler);
+app.get(`${basepath}/api/friend-requests`, [
+  checkLoggedIn
+], getFriendReqsHandler);
+app.post(`${basepath}/api/friend-requests/:id/respond`, [
   checkLoggedIn,
-  param("sender_id").trim().notEmpty().isInt(),
-  body("action").trim().isString()
+  param("id").trim().isInt().withMessage("Invalid user ID given.").toInt(),
+  body("action").trim().isString().notEmpty().withMessage("No action given."),
 ], respondFriendReqHandler);
 
 // Account logic
-app.post("/api/login", [
-  body("email").trim().isEmail(),
-  body("password").trim().isAscii()
+app.post(`${basepath}/api/login`, [
+  body("email").trim().isEmail().withMessage("Invalid email entered."),
+  body("password").trim().notEmpty().withMessage("Invalid password entered."),
 ], loginRouteHandler);
-app.post("/api/register", registerRouteHandler);
-app.get("/api/currentUser", checkLoggedIn, getLoggedInUser);
-app.put("/api/users/:id/info", updateUserInfo);
+app.post(`${basepath}/api/register`, [
+
+], registerRouteHandler);
+app.get(`${basepath}/api/currentUser`, [
+  checkLoggedIn
+], getLoggedInUser);
+app.put(`${basepath}/api/users/:id/info`, [
+  checkLoggedIn,
+  param("id").trim().isInt().withMessage("Invalid user ID given.").toInt(),
+], updateUserInfo);
 
 // Chat
-app.get("/api/chat/:friend_id", [
+app.get(`${basepath}/api/chat/:id`, [
   checkLoggedIn,
-  param("friend_id").trim().notEmpty()
+  param("id").trim().isInt().withMessage("Invalid user ID given.").toInt(),
 ], getChatHandler);
-app.post("/api/chat/:friend_id", [
+app.post(`${basepath}/api/chat/:id`, [
   checkLoggedIn,
-  body("chat-input").trim().notEmpty(), // The message content
-  param("friend_id").trim().notEmpty().isInt() // The message's recipient
+  param("id").trim().isInt().withMessage("Invalid user ID given.").toInt(),
+  body("chat-input").trim().notEmpty().withMessage("Empty message entered.")
+    .escape(), // Escaping message content to prevent XSS 
 ], sendMessageHandler);
 
 app.listen(port, () => {

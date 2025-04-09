@@ -23,7 +23,7 @@ window.addEventListener("load", () => {
         const formData = new FormData(loginForm);
         const data = Object.fromEntries(formData.entries());
 
-        const res = await fetch("/api/login", {
+        const res = await fetch("../api/login", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify(data)
@@ -31,7 +31,7 @@ window.addEventListener("load", () => {
 
         if (res.ok) {
           // Login was successful
-          window.location.replace("/users/");
+          window.location.replace("users/");
         } else {
           // Login was unsuccessful, display error message.
           const result = await res.json();
