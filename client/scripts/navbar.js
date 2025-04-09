@@ -1,6 +1,8 @@
 import { getLoggedInUser } from "./account-management.js";
 import { elementBuilder } from "./utils.js";
 
+// Adds a link to the user's profile in the top-right of the navbar,
+// with the user's name fetched from the server.
 export const loadNavbarData = async () => {
   const user = await getLoggedInUser();
   if (!user) return;

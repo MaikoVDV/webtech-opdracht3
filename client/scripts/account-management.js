@@ -1,4 +1,10 @@
+/*
+Responsible for getting data on the currently logged-in user, 
+and for adding functionality to the login- and register forms.
+*/
+
 let loggedInUserData;
+// Fetch the logged in user, and save it in loggedInUserData so subsequent fetches aren't necessary
 export const getLoggedInUser = async () => {
   if (loggedInUserData) {
     return loggedInUserData;
@@ -14,6 +20,7 @@ export const getLoggedInUser = async () => {
 }
 
 window.addEventListener("load", () => {
+  // When on the root route, try to add functionality to the login form.
   if (window.location.pathname == "/") {
     try {
       const loginForm = document.getElementById("login-form");
@@ -40,6 +47,8 @@ window.addEventListener("load", () => {
       });
     } catch (exception) { }
   }
+
+  // When on the registry route, try to add functionality to the register form.
   if (window.location.pathname == "/register") {
     try {
       const registerForm = document.querySelector(".form__button#submit");
@@ -77,6 +86,8 @@ window.addEventListener("load", () => {
   }
 });
 
+// Gets all the values in the register form and validates certain fields to prevent unwanted inputs.
+// These validations are of course also carried out on the server, this just saves network traffic.
 function getRegisterFormData() {
   const form = document.querySelector(".register__form");
 
@@ -113,11 +124,18 @@ function getRegisterFormData() {
   return body;
 };
 
+// Validates the user's entered email using a regex string.
 function validateEmail(email) {
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
   return emailRegex.test(email);
 };
 
+/* Validates the user's entered password for 
+  * being at least 8 characters long
+  * containing at least one uppercase character
+  * a number
+  * a special character
+*/
 function validatePassword(password) {
   const errors = [];
 
@@ -142,6 +160,7 @@ function validatePassword(password) {
     : { valid: false, errors: errors };
 }
 
+// Displays a notification regarding registry success or an error message.
 function showNotification(message, type) {
   const notification = document.querySelector(".notification");
   notification.innerText = message;

@@ -1,7 +1,15 @@
 import { elementBuilder } from "./utils.js";
+
+/*
+Fills the sent friend requests box and received friend requests box with the appropriate data, fetched from the server.
+Also adds buttons to them with handlers for accepting/rejecting friend requests.
+*/
+
 window.addEventListener("load", async () => {
   updateFriendRequestList();
 });
+
+// Updates the friend requests list as specified at top of file.
 async function updateFriendRequestList() {
   const requestsQuery = await fetch("/api/friend-requests", {
     method: "GET",

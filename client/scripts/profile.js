@@ -2,6 +2,12 @@ import { elementBuilder } from "./utils.js";
 import { openEditModal, closeEditModal, saveChanges, onPhotoButtonClick, onModalPhotoChange, displayDataInModalFields } from "./profile-modal.js";
 import { getLoggedInUser } from "./account-management.js";
 
+/* 
+Responsible for loading all profile data of the given user. 
+Also adds content to the profile editing modal and course view modal. 
+*/
+
+// Loads the profile data of the user on this route.
 async function loadProfileData() {
   const userId = window.location.pathname.split('/').pop(); // Get user id from URL
   const response = await fetch(`/api/users/${userId}`);
@@ -20,6 +26,7 @@ async function loadProfileData() {
   if (userId == loggedInUser.id) {
     profileEditButton.style.display = "block";
   };
+  // Add remove friend button (invisible when user is not friends with the logged-in user.)
   const removeFriendButton = document.querySelector(".profile__button-remove-friend");
   removeFriendButton.addEventListener("click", async () => {
     await fetch(`/api/friend-requests/${userId}`, {
@@ -34,6 +41,7 @@ async function loadProfileData() {
   if (user.areFriends) {
     removeFriendButton.style.display = "block";
   }
+  // Add friend button (invisible when user is not taking the same course as the logged-in user.)
   const addFriendButton = document.querySelector(".profile__button-add-friend");
   addFriendButton.addEventListener("click", async () => {
     await fetch(`/api/friend-requests/${userId}`, {
