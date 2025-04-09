@@ -86,60 +86,60 @@ app.get("/users/:id", async (req, res) => {
 
 // == API ROUTES --
 // User information
-app.get("/api/users/:id", [
+app.get("api/users/:id", [
   checkLoggedIn,
   param("id").trim().isInt().withMessage("Invalid user ID given.").toInt(),
 ], getUser);
-app.get("/api/users/:id/friends", [
+app.get("api/users/:id/friends", [
   checkLoggedIn,
   param("id").trim().isInt().withMessage("Invalid user ID given.").toInt(),
 ], getFriends);
-app.get("/api/users/:id/courses", [
+app.get("api/users/:id/courses", [
   checkLoggedIn,
   param("id").trim().isInt().withMessage("Invalid user ID given.").toInt(),
 ], getCourses);
-app.get("/api/photo/:id", [
+app.get("api/photo/:id", [
   checkLoggedIn,
   param("id").trim().isInt().withMessage("Invalid user ID given.").toInt(),
 ], getProfilePhoto);
 
 // Friends
-app.post("/api/friend-requests/:id", [
+app.post("api/friend-requests/:id", [
   checkLoggedIn,
   param("id").trim().isInt().withMessage("Invalid user ID given.").toInt(),
   body("action").trim().isString().notEmpty().withMessage("No action given."),
 ], updateFriendshipHandler);
-app.get("/api/friend-requests", [
+app.get("api/friend-requests", [
   checkLoggedIn
 ], getFriendReqsHandler);
-app.post("/api/friend-requests/:id/respond", [
+app.post("api/friend-requests/:id/respond", [
   checkLoggedIn,
   param("id").trim().isInt().withMessage("Invalid user ID given.").toInt(),
   body("action").trim().isString().notEmpty().withMessage("No action given."),
 ], respondFriendReqHandler);
 
 // Account logic
-app.post("/api/login", [
+app.post("api/login", [
   body("email").trim().isEmail().withMessage("Invalid email entered."),
   body("password").trim().notEmpty().withMessage("Invalid password entered."),
 ], loginRouteHandler);
-app.post("/api/register", [
+app.post("api/register", [
 
 ], registerRouteHandler);
-app.get("/api/currentUser", [
+app.get("api/currentUser", [
   checkLoggedIn
 ], getLoggedInUser);
-app.put("/api/users/:id/info", [
+app.put("api/users/:id/info", [
   checkLoggedIn,
   param("id").trim().isInt().withMessage("Invalid user ID given.").toInt(),
 ], updateUserInfo);
 
 // Chat
-app.get("/api/chat/:id", [
+app.get("api/chat/:id", [
   checkLoggedIn,
   param("id").trim().isInt().withMessage("Invalid user ID given.").toInt(),
 ], getChatHandler);
-app.post("/api/chat/:id", [
+app.post("api/chat/:id", [
   checkLoggedIn,
   param("id").trim().isInt().withMessage("Invalid user ID given.").toInt(),
   body("chat-input").trim().notEmpty().withMessage("Empty message entered.")
