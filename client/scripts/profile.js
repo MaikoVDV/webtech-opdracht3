@@ -92,13 +92,14 @@ async function loadProfileData() {
 
     const friendsHeader = document.querySelector(".profile__sec-header#friends");
     friendsHeader.textContent += ` (${friends.length})`;
-    
+
     friends.forEach(friend => {
       let friendItem = friendsContainer.appendChild(elementBuilder("li", {
         class: "profile__list-item"
       }));
-      friendItem.appendChild(elementBuilder("p", {
-        textContent: friend.first_name
+      friendItem.appendChild(elementBuilder("a", {
+        textContent: friend.first_name,
+        href: `/users/${friend.id}`
       }));
     });
   }

@@ -212,7 +212,8 @@ body.modal--visible::before {
   border-radius: 50%; /* Circular student photos */
 }
 
-.modal__students a {
+.modal__students a,
+#friends-container a {
   margin: 0;
   font-size: 1rem;
   color: black;
