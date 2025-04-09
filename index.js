@@ -7,6 +7,7 @@ import { updateUserInfo } from "./api/profile-management.js";
 
 import fs from "fs";
 import express from "express";
+import morgan from "morgan";
 import session from "express-session";
 import bcrypt from "bcrypt";
 import path from "path";
@@ -40,6 +41,7 @@ await initDB();
 
 // Add middleware.
 app.use(express.json());
+app.use(morgan('combined'));
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(session(sessionOptions));
 // Middlewares below add values to res.locals for routes to respond differently given auth conditions
