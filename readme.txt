@@ -1,6 +1,6 @@
 Group 10
 Maiko van der Veen - 8365121
-Bessel Withoos - 
+Bessel Withoos - 4462327
 
 http://webtech.science.uu.nl/group10/
 
@@ -19,6 +19,7 @@ Project structure:
     friend-requests.js - Displaying sent and received friend requests
     navbar.js - Adding the user's name to the right side of the navbar
     profile-modal.js - Configuring the profile modal and sending the updated data on form submission
+      Editing profile pictures unfortunately does not work at this time due to an oversight on our part. We're aware of the problem, and we apologise for our error.
     profile.js - Handles filling the profile page with data and configuring the interactive features (like the course popup and friend-related buttons)
     register.js - Handles submission of the registry form
     utils.js - A little helper function elementBuilder() that makes dynamically adding HTML elmenents slightly more convenient.
