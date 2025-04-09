@@ -1,7 +1,7 @@
 import { initDB, SqliteStore } from "./connect-database.js";
-import { loginRouteHandler, registerRouteHandler, getLoggedInUser, checkLoggedIn } from "./api/account-management.js";
+import { loginRouteHandler, registerRouteHandler, getLoggedInUser, checkLoggedIn, checkShareCourses, checkAreFriends, checkIsLoggedInUser } from "./api/account-management.js";
 import { getUser, getProfilePhoto, getFriends, getCourses } from "./api/users.js";
-import { addFriendHandler, getFriendReqsHandler, respondFriendReqHandler } from "./api/friends.js";
+import { updateFriendshipHandler, getFriendReqsHandler, respondFriendReqHandler } from "./api/friends.js";
 import { getChatHandler, sendMessageHandler } from "./api/chat.js";
 import { updateUserInfo } from "./api/profile-management.js";
 
@@ -42,6 +42,10 @@ await initDB();
 app.use(express.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(session(sessionOptions));
+// Middlewares below add values to res.locals for routes to respond differently given auth conditions
+app.param("id", checkIsLoggedInUser);
+app.param("id", checkAreFriends);
+app.param("id", checkShareCourses);
 
 // Necessary to send CSS and client JS. Exposes some routes like /index.js that would normally be
 // at /, but that poses no security risks and comes at no inconvenience to the end user,
@@ -80,23 +84,30 @@ app.get("/users/:id", async (req, res) => {
 
 // == API ROUTES --
 // User information
-app.get("/api/users/:id", checkLoggedIn, getUser);
-app.get("/api/users/:id/friends", checkLoggedIn, getFriends);
-app.get("/api/users/:id/courses", checkLoggedIn, getCourses);
-app.get("/api/photo/:id", [ /// TODO: ADD FRIENDSHIP / SAME COURSE CHECK
+app.get("/api/users/:id", [
+  checkLoggedIn,
+], getUser);
+app.get("/api/users/:id/friends", [
+  checkLoggedIn,
+], getFriends);
+app.get("/api/users/:id/courses", [
+  checkLoggedIn,
+], getCourses);
+app.get("/api/photo/:id", [
   checkLoggedIn,
   param("id").trim().notEmpty().isInt()
 ], getProfilePhoto);
 
 // Friends
-app.post("/api/friend-requests/:target_id", [
+app.post("/api/friend-requests/:id", [
   checkLoggedIn,
-  param("friend_id").trim().notEmpty().isInt()
-], addFriendHandler);
+  param("id").trim().notEmpty().isInt(),
+  body("action").trim().isString(),
+], updateFriendshipHandler);
 app.get("/api/friend-requests", checkLoggedIn, getFriendReqsHandler);
-app.post("/api/friend-requests/:sender_id/respond", [
+app.post("/api/friend-requests/:id/respond", [
   checkLoggedIn,
-  param("sender_id").trim().notEmpty().isInt(),
+  param("id").trim().notEmpty().isInt(),
   body("action").trim().isString()
 ], respondFriendReqHandler);
 
@@ -110,14 +121,14 @@ app.get("/api/currentUser", checkLoggedIn, getLoggedInUser);
 app.put("/api/users/:id/info", updateUserInfo);
 
 // Chat
-app.get("/api/chat/:friend_id", [
+app.get("/api/chat/:id", [
   checkLoggedIn,
-  param("friend_id").trim().notEmpty()
+  param("id").trim().notEmpty()
 ], getChatHandler);
-app.post("/api/chat/:friend_id", [
+app.post("/api/chat/:id", [
   checkLoggedIn,
   body("chat-input").trim().notEmpty(), // The message content
-  param("friend_id").trim().notEmpty().isInt() // The message's recipient
+  param("id").trim().notEmpty().isInt() // The message's recipient
 ], sendMessageHandler);
 
 app.listen(port, () => {

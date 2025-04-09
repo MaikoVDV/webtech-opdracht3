@@ -3,20 +3,52 @@ import { openEditModal, closeEditModal, saveChanges, onPhotoButtonClick, onModal
 import { getLoggedInUser } from "./account-management.js";
 
 async function loadProfileData() {
-  const userId = window.location.pathname.split('/').pop(); // Get username from URL
+  const userId = window.location.pathname.split('/').pop(); // Get user id from URL
   const response = await fetch(`/api/users/${userId}`);
   const user = await response.json();
 
   const loggedInUser = await getLoggedInUser();
   if (!loggedInUser) return;
 
-  console.log(userId, loggedInUser.id);
-
-  if (userId != loggedInUser.id) {
-    console.log("hi");
-    const profileEditButton = document.querySelector(".profile__button-edit");
-    profileEditButton.style.display = "none";
+  // Check if the user is on his/her own profile page
+  const profileEditButton = document.querySelector(".profile__button-edit");
+  profileEditButton.addEventListener("click", openEditModal);
+  if (userId == loggedInUser.id) {
+    profileEditButton.style.display = "block";
   };
+  const removeFriendButton = document.querySelector(".profile__button-remove-friend");
+  removeFriendButton.addEventListener("click", async () => {
+    await fetch(`/api/friend-requests/${userId}`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        action: "remove"
+      })
+    });
+    window.location.reload();
+  })
+  if (user.areFriends) {
+    removeFriendButton.style.display = "block";
+  }
+  const addFriendButton = document.querySelector(".profile__button-add-friend");
+  addFriendButton.addEventListener("click", async () => {
+    await fetch(`/api/friend-requests/${userId}`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        action: "add"
+      })
+    });
+    window.location.reload();
+  })
+  if (!user.areFriends && user.shareCourses) {
+    addFriendButton.style.display = "block";
+    // Currently logged-in user has sent a friend request, but its still pending.
+    if (user.userSentRequest) {
+      addFriendButton.textContent = "Friend request pending..."
+      addFriendButton.setAttribute("disabled", true);
+    }
+  }
 
   const nameHeader = document.querySelector(".profile__fullname");
   nameHeader.textContent = `${user.first_name} ${user.last_name}`;
@@ -29,55 +61,59 @@ async function loadProfileData() {
 
   displayDataInModalFields(user);
 
-  document.querySelector(".profile__button-edit").addEventListener("click", openEditModal);
+  // Add interactivity to profile edit popup
   document.querySelector(".modal__button-close").addEventListener("click", closeEditModal);
   document.querySelector(".form__button#cancel").addEventListener("click", closeEditModal);
   document.querySelector("#input-photo").addEventListener("change", onModalPhotoChange);
   document.querySelector(".form__button#save").addEventListener("click", saveChanges);
   document.querySelector(".form__button").addEventListener("click", onPhotoButtonClick);
 
-
-  const friendsContainer = document.querySelector("#friends-container");
+  // Display the student's friends
   const friendsQuery = await fetch(`/api/users/${userId}/friends`);
-  const friends = await friendsQuery.json();
+  if (friendsQuery.ok) {
+    const friendsContainer = document.querySelector("#friends-container");
+    const friends = await friendsQuery.json();
+    friends.forEach(friend => {
+      let friendItem = friendsContainer.appendChild(elementBuilder("li", {
+        class: "profile__list-item"
+      }));
+      friendItem.appendChild(elementBuilder("p", {
+        textContent: friend.first_name
+      }));
+    });
+  }
 
-  friends.forEach(friend => {
-    let friendItem = friendsContainer.appendChild(elementBuilder("li", {
-      class: "profile__list-item"
-    }));
-    friendItem.appendChild(elementBuilder("p", {
-      textContent: friend.first_name
-    }));
-  });
-
-  const coursesContainer = document.querySelector("#courses-container");
+  // Display the student's taken courses
   const coursesQuery = await fetch(`/api/users/${userId}/courses`);
-  const courses = await coursesQuery.json();
+  if (coursesQuery.ok) {
+    const coursesContainer = document.querySelector("#courses-container");
+    const courses = await coursesQuery.json();
 
-  courses.forEach(course => {
-    let courseItem = coursesContainer.appendChild(elementBuilder("li", {
-      class: "profile__list-item course-item"
-    }));
-    courseItem.appendChild(elementBuilder("p", {
-      class: "course-item__name",
-      textContent: course.name
-    }));
+    courses.forEach(course => {
+      let courseItem = coursesContainer.appendChild(elementBuilder("li", {
+        class: "profile__list-item course-item"
+      }));
+      courseItem.appendChild(elementBuilder("p", {
+        class: "course-item__name",
+        textContent: course.name
+      }));
 
-    let courseDetails = courseItem.appendChild(elementBuilder("div", {
-      class: "profile__list-item--subsection",
-    }));
-    courseDetails.appendChild(elementBuilder("p", {
-      class: "course-item__description",
-      textContent: course.description
-    }));
-    courseDetails.appendChild(elementBuilder("p", {
-      class: "course-item__teacher",
-      textContent: `${course.teacher_first_name} ${course.teacher_last_name}`
-    }));
-    courseDetails.appendChild(elementBuilder("button", {
-      class: "course-item__participants-button",
-      textContent: `${course.teacher_first_name} ${course.teacher_last_name}`
-    }));
-  });
+      let courseDetails = courseItem.appendChild(elementBuilder("div", {
+        class: "profile__list-item--subsection",
+      }));
+      courseDetails.appendChild(elementBuilder("p", {
+        class: "course-item__description",
+        textContent: course.description
+      }));
+      courseDetails.appendChild(elementBuilder("p", {
+        class: "course-item__teacher",
+        textContent: `${course.teacher_first_name} ${course.teacher_last_name}`
+      }));
+      courseDetails.appendChild(elementBuilder("button", {
+        class: "course-item__participants-button",
+        textContent: `${course.teacher_first_name} ${course.teacher_last_name}`
+      }));
+    });
+  }
 }
 loadProfileData();

@@ -1,14 +1,7 @@
 import { connectDB } from "../connect-database.js";
 import { validationResult } from "express-validator";
 
-// Operates on /api/chat/:friend_id
-const checkFriendshipQuery = `
-    SELECT 1
-    FROM Friends f
-    JOIN Students s1 ON f.user1_id = s1.id
-    JOIN Students s2 ON f.user2_id = s2.id
-    WHERE (f.user1_id = ? AND f.user2_id = ?) OR (f.user1_id = ? AND f.user2_id = ?);
-`;
+// Operates on /api/chat/:id
 const getConvoQuery = `
   SELECT id
   FROM Conversations
@@ -25,17 +18,17 @@ export const getChatHandler = async (req, res) => {
   if (!validationRes.isEmpty()) {
     return res.status(401).json({error: "Failed to access chat data, not logged in."});
   }
+  if (res.locals.checkIsLoggedInUser) {
+    return res.status(400).json({ error: "You can't chat with yourself. "});
+  }
+  if (!res.locals.checkAreFriends) {
+    return res.status(404).json({ error: "User not found. "});
+  }
 
   try {
-    const userId = req.session.user.id;
-    const friendId = req.params.friend_id;
-
-    // Check if users are friends
     const db = await connectDB();
-    const friendCheckQuery = await db.get(checkFriendshipQuery, [userId, friendId, friendId, userId]);
-    if (!friendCheckQuery) {
-      return res.status(401).json({error: "You are not friends with this user!"});
-    }
+    const userId = req.session.user.id;
+    const friendId = req.params.id;
 
     // Check if a conversation exists between the students.
     // If not, create one.
@@ -73,9 +66,16 @@ export const sendMessageHandler = async (req, res) => {
     return res.status(400).json({error: "Invallid message."});
   }
 
+  if (res.locals.checkIsLoggedInUser) {
+    return res.status(400).json({ error: "You can't chat with yourself. "});
+  }
+  if (!res.locals.checkAreFriends) {
+    return res.status(404).json({ error: "User not found. "});
+  }
+
   try {
     const userId = req.session.user.id;
-    const friendId = req.params.friend_id;
+    const friendId = req.params.id;
     const messageContent= req.body["chat-input"];
 
     // Check if message is valid
