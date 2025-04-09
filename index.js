@@ -21,6 +21,11 @@ const app = express();
 const port = 8010;
 const basepath = process.env.BASE_PATH || "";
 
+/*
+The main JavaScript file, which configures all our packages and express routes.
+Routes are all specified individually here with their appropriate middlewares (mostly for input validation).
+*/
+
 // Make sure asset directories are present
 if (!fs.existsSync(path.join(__dirname, "assets"))) {
   fs.mkdirSync(path.join(__dirname, "assets"));
