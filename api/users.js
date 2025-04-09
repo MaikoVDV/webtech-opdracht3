@@ -6,10 +6,10 @@ import { connectDB } from "../connect-database.js";
 
 // Operates on /api/users/:id
 // Gets some amount of user data, depending on the familiarity between the logged-in user and the requested user.
-// Friends (and the logged-in user himself) get all data, classmates only get the name (sending the photo is handled in getProfilePhoto).
+// Friends (and the logged-in user himself) get all data, classmates only get the name 
 // To other users this user is unknown and so the route just sends a 404 with a vague error message.
 const userQuery = `
-  SELECT id, email, first_name, last_name, age, hobbies, program, courses
+  SELECT id, email, first_name, last_name, age, photo, hobbies, program, courses
   FROM Students
   WHERE id = ?;
 `;

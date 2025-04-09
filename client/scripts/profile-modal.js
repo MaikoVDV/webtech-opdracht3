@@ -42,7 +42,6 @@ export async function saveChanges() {
     last_name,
     email,
     age,
-    photo: photo?.name || user.photo,
     hobbies: hobbies || null,
     program: program,
     courses: courses.length ? courses.join(", ") : null,
@@ -74,7 +73,6 @@ export function displayDataInModalFields(user) {
   form.querySelector("#email").value = user.email || "";
   form.querySelector("#age").value = user.age || "";
 
-  console.log(user);
   const photoPreview = form.querySelector(".form__photo-preview");
 
   photoPreview.src = `/api/photo/${user.id}`;

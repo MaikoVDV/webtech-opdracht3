@@ -103,7 +103,7 @@ export const registerRouteHandler = async (req, res) => {
         const savepath = path.join(__dirname, "assets", "profile_pics", photoname);
         fs.writeFile(savepath, photo.buffer, err => {
           if (err) {
-            console.log(err);
+            console.error(err);
             return res.status(500).json({ error: "Failed to process submitted data." });
           }
         });
