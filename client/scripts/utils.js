@@ -1,3 +1,4 @@
+// A simple helper function to make building elements dynamically slightly more convenient and less verbose
 export const elementBuilder = (element, args) => {
   const builtElement = document.createElement(element);
 

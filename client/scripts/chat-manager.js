@@ -1,8 +1,13 @@
 import { elementBuilder } from "./utils.js";
 import { getLoggedInUser } from "./account-management.js";
 
+/*
+  Handles getting chat conversations, messages, and sending messages.
+*/
+
 let currentOpenFriend = null;
 
+// Fills the chatwindow with data after the page has fully loaded
 window.addEventListener("load", async () => {
   // Check if logged in
   const user = await getLoggedInUser();
@@ -45,6 +50,8 @@ window.addEventListener("load", async () => {
     }
   })
 });
+
+// Opens the chat with the selected friend (friendId specified in the click handler for the button that was pressed).
 async function openChat(friendId) {
   const user = await getLoggedInUser();
   if (!user) return window.location.href = "/"; // Recheck if logged in - session might have expired since opening window

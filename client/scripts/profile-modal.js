@@ -1,17 +1,21 @@
+// Opens the modal
 export function openEditModal() {
   document.querySelector(".modal").style.display = "block";
   document.body.classList.add("modal--visible");
 }
 
+// Closes the modal
 export function closeEditModal() {
   document.querySelector(".modal").style.display = "none";
   document.body.classList.remove("modal--visible");
 }
 
+// Helper function for passing click event to the correct element.
 export function onPhotoButtonClick() {
   document.querySelector("input#input-photo").click();
 }
 
+// Pushes profile edits to the server
 export async function saveChanges() {
   const userId = window.location.pathname.split('/').pop();
   const response = await fetch(`/api/users/${userId}`);
@@ -62,6 +66,7 @@ export async function saveChanges() {
   };
 };
 
+// Displays the current user data (fetched from the server in another function) in the profile modal as default values
 export function displayDataInModalFields(user) {
   const form = document.querySelector(".modal__form");
 
@@ -88,6 +93,7 @@ export function displayDataInModalFields(user) {
   });
 };
 
+// Shows the uploaded photo in the modal
 export function onModalPhotoChange(input) {
   const file = input.target.files[0];
   if (file) {
@@ -101,11 +107,18 @@ export function onModalPhotoChange(input) {
   };
 };
 
+// Helper function to validate the entered email address
 function validateEmail(email) {
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
   return emailRegex.test(email);
 };
 
+/* Validates the user's entered password for 
+  * being at least 8 characters long
+  * containing at least one uppercase character
+  * a number
+  * a special character
+*/
 function showNotification(message, type) {
   const notification = document.querySelector(".notification");
   notification.innerText = message;
