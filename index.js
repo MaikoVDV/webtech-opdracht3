@@ -61,16 +61,6 @@ app.param("id", checkShareCourses);
 // while keeping the server-side codebase fairly clean.
 app.use(express.static("client"));
 
-app.get("/api/bazinga", async (req, res) => {
-  const db = await connectDB();
-  const q = `
-  UPDATE Students
-  SET password = ?
-  `;
-  const hashedPassword = await bcrypt.hash("bazinga", 12);
-  await db.run(q, hashedPassword);
-  res.send();
-})
 
 // == CLIENT ROUTES ==
 app.get(basepath, (req, res) => {
