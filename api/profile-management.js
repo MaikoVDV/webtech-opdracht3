@@ -1,5 +1,6 @@
 import { connectDB } from "../connect-database.js";
 
+// PUTs changes to a user's account into the database. Is called by the profile update modal.
 export async function updateUserInfo(req, res) {
   const db = await connectDB();
   const { id } = req.params;

@@ -1,6 +1,9 @@
 import { connectDB } from "../connect-database.js";
 
 // Operates on /api/friend-requests/:id
+// Given either an 'add' or 'remove' action (specified in req.body), 
+// this either sends a friend request to a user
+// or removes the friendship between a user who's already a friend
 const sendFriendRequestQuery = `
   INSERT INTO FriendRequests (sender_id, target_id)
   VALUES (?, ?);
@@ -72,6 +75,8 @@ export const getFriendReqsHandler = async (req, res) => {
 }
 
 // Operates on /api/friend-requests/:id/respond
+// Handles acceptance or rejection of friend request that the user has received
+// Like in updateFriendshipHandler, the action is specified in req.body.action with either "reject" or "accept".
 const checkFriendRequestStatusQuery = `
   SELECT status
   FROM FriendRequests

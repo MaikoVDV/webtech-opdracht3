@@ -2,6 +2,8 @@ import { connectDB } from "../connect-database.js";
 import { validationResult } from "express-validator";
 
 // Operates on /api/chat/:id
+// Gets the conversation between the logged in user and the user specified by the id param
+// Subsequently gets the messages belonging to that conversation.
 const getConvoQuery = `
   SELECT id
   FROM Conversations
@@ -56,6 +58,8 @@ export const getChatHandler = async (req, res) => {
   }
 }
 
+// Appends the submitted message to a conversation.
+// Input sanitation and escaping naughty XSS attacks is handled by middleware
 const sendMessageQuery = `
   INSERT INTO Messages (convo_id, sender_id, content)
   VALUES (?, ?, ?);

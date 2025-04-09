@@ -7,6 +7,7 @@ import Busboy from "busboy";
 import bcrypt from "bcrypt";
 
 // Operates on /api/login
+// Responds to user's login requests by matching email and (hashed)password
 const getUserByEmailQuery = `
 SELECT *
 FROM Students
@@ -44,6 +45,10 @@ export const loginRouteHandler = async (req, res) => {
   }
 };
 
+// Operates on /api/register
+// Uses busboy to parse the mixed form data (json and binary image data)
+// Field validation handled on route definition by middleware.
+// Handles adding Students to the database.
 const insertUserQuery = `
 INSERT INTO Students (email, first_name, last_name, age, photo, password, hobbies, program, courses)
 VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?);
@@ -129,6 +134,7 @@ export const registerRouteHandler = async (req, res) => {
 };
 
 // Operates on /api/currentUser
+// Checks the user's session for it's id and returns the user data matching it
 const getUserByIdQuery = `
 SELECT *
 FROM Students
@@ -152,7 +158,7 @@ export const checkLoggedIn = (req, res, next) => {
 
 // Middleware to check if the user that sent the request is just the user that was requested.
 // Doesn't *really* need to be implemented as middleware, but this approach preserves consitency
-// with other route protection strategies (checkSameCourse, express-validator middlewares, etc.)
+// with other route protection strategies (checkSameCourses, express-validator middlewares, etc.)
 export const checkIsLoggedInUser = async (req, res, next, id) => {
   try {
     const userId = req.session.user.id;
@@ -163,6 +169,7 @@ export const checkIsLoggedInUser = async (req, res, next, id) => {
   }
   return next();
 }
+
 // Middleware to protect routes that should only be accessible for users that share a course with the other user
 // Assumes the user is logged in
 const checkSameCourseQuery = `

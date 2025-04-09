@@ -5,6 +5,9 @@ import { __dirname } from "../index.js";
 import { connectDB } from "../connect-database.js";
 
 // Operates on /api/users/:id
+// Gets some amount of user data, depending on the familiarity between the logged-in user and the requested user.
+// Friends (and the logged-in user himself) get all data, classmates only get the name (sending the photo is handled in getProfilePhoto).
+// To other users this user is unknown and so the route just sends a 404 with a vague error message.
 const userQuery = `
   SELECT id, email, first_name, last_name, age, hobbies, program, courses
   FROM Students
@@ -67,6 +70,10 @@ export const getUser = async (req, res) => {
 };
 
 // Operates on /api/photo/:id
+// Sends the specified user's profile photo to the client, if they are friends or classmates. (or if the logged-in user is requesting their own photo)
+// Pretends to send a 404 if they are not friends or classmates.
+// The name of the photo is stored in the database, and the actual photo file is served from assets/profile_pics where they're all stored.
+// This should have slight performance and maintainability benefits to just converting all photos to base64 strings and serving them inside a basic user query.
 export const getProfilePhoto = async (req, res) => {
   const validationRes = validationResult(req);
   if (!validationRes.isEmpty()) {
@@ -90,6 +97,9 @@ export const getProfilePhoto = async (req, res) => {
 }
 
 // Operates on /api/users/:id/friends
+// Gets all the friends of the given user (assuming they're friends or the logged-in user's own friends are being requested)
+// This query is fugly because a friendship relationship is specified with user1_id and user2_id, and the user can be either,
+// and then takes only the usernames and ids of the friends (leaving out duplicates and the user's own data).
 export const getFriends = async (req, res) => {
   // Check if user is authorized to see this student's friends
   if (!(res.locals.checkIsLoggedInUser || res.locals.checkAreFriends)) {
@@ -125,6 +135,7 @@ export const getFriends = async (req, res) => {
 };
 
 // Operates on /api/users/:id/courses
+// Gets the specified user's courses (if the logged-in user is asking about their own or about their friends courses)
 export const getCourses = async (req, res) => {
   if (!(res.locals.checkIsLoggedInUser || res.locals.checkAreFriends)) {
     return res.status(404).json({ error: "Couldn't find user. " });
@@ -141,14 +152,16 @@ export const getCourses = async (req, res) => {
 };
 
 // Operates on /api/users/:id/:course_id/participants
-export const getCourseParticipants = async (req, res) => {
-  const db = await connectDB();
-  const { course_id } = req.params;
-  const course = await db.all(`
+// Gets all the participants of a given course
+const coursePariticipantsQuery = `
     SELECT *
     FROM CourseParticipants
     WHERE course_id = ?;
-`,
-    [course_id]);
-  res.json(course);
+`;
+export const getCourseParticipants = async (req, res) => {
+  const db = await connectDB();
+  const { course_id } = req.params;
+
+  const course = await db.all(coursePariticipantsQuery, [course_id]);
+  return res.json(course);
 };
