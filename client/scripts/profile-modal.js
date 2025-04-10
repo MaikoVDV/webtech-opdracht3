@@ -1,3 +1,5 @@
+import { routePatcher } from "./utils.js";
+
 // Opens the modal
 export function openEditModal() {
   document.querySelector(".modal").style.display = "block";
@@ -18,7 +20,7 @@ export function onPhotoButtonClick() {
 // Pushes profile edits to the server
 export async function saveChanges() {
   const userId = window.location.pathname.split('/').pop();
-  const response = await fetch(`/api/users/${userId}`);
+  const response = await fetch(routePatcher(`api/users/${userId}`));
   const user = await response.json();
 
   const form = document.querySelector(".modal__form");
@@ -48,7 +50,7 @@ export async function saveChanges() {
   };
 
   try {
-    const response = await fetch(`/api/users/${userId}/info`, {
+    const response = await fetch(routePatcher(`api/users/${userId}/info`), {
       method: "PUT",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(body),
@@ -75,7 +77,7 @@ export function displayDataInModalFields(user) {
 
   const photoPreview = form.querySelector(".form__photo-preview");
 
-  photoPreview.src = `/api/photo/${user.id}`;
+  photoPreview.src = routePatcher(`api/photo/${user.id}`);
 
   form.querySelector("#hobbies").value = user.hobbies || "";
   form.querySelector("#program").value = user.program || "";

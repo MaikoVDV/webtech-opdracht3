@@ -1,4 +1,4 @@
-import { elementBuilder } from "./utils.js";
+import { elementBuilder, routePatcher } from "./utils.js";
 import { getLoggedInUser } from "./account-management.js";
 
 /*
@@ -11,16 +11,16 @@ let currentOpenFriend = null;
 window.addEventListener("load", async () => {
   // Check if logged in
   const user = await getLoggedInUser();
-  if (!user) return window.location.href = "/";
+  if (!user) return window.location.href = routePatcher("");
 
   // Get list of friends
   const friendsContainer = document.querySelector(".friends-list");
-  const friendsQuery = await fetch(`/api/users/${user.id}/friends`);
+  const friendsQuery = await fetch(routePatcher(`api/users/${user.id}/friends`));
   const friends = await friendsQuery.json();
 
   friends.forEach(friend => {
     const friendEntry = elementBuilder("li", { class: "friends-list__item" });
-    friendEntry.appendChild(elementBuilder("img", { class: "friends-list__photo", src: `/api/photo/${friend.id}` }));
+    friendEntry.appendChild(elementBuilder("img", { class: "friends-list__photo", src: routePatcher(`/api/photo/${friend.id}`) }));
     friendEntry.appendChild(elementBuilder("p", { class: "friends-list__name", textContent: `${friend.first_name} ${friend.last_name}` }));
     friendEntry.addEventListener("click", () => {
       Array.from(friendsContainer.children).forEach(child => {
@@ -38,7 +38,7 @@ window.addEventListener("load", async () => {
     event.preventDefault();
     const msgInputData = new FormData(inputForm);
     const msg = Object.fromEntries(msgInputData.entries());
-    const postMsgQuery = await fetch(`/api/chat/${currentOpenFriend.id}`, {
+    const postMsgQuery = await fetch(routePatcher(`api/chat/${currentOpenFriend.id}`), {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(msg)
@@ -46,7 +46,7 @@ window.addEventListener("load", async () => {
     if (postMsgQuery.ok) openChat(currentOpenFriend.id);
     else if (postMsgQuery.status == 401) {
       // Not logged in
-      return window.location.href = "/";
+      return window.location.href = routePatcher("");
     }
   })
 });
@@ -54,10 +54,10 @@ window.addEventListener("load", async () => {
 // Opens the chat with the selected friend (friendId specified in the click handler for the button that was pressed).
 async function openChat(friendId) {
   const user = await getLoggedInUser();
-  if (!user) return window.location.href = "/"; // Recheck if logged in - session might have expired since opening window
+  if (!user) return window.location.href = routePatcher("/"); // Recheck if logged in - session might have expired since opening window
 
   try {
-    const friendQuery = await fetch(`/api/users/${friendId}`);
+    const friendQuery = await fetch(routePatcher(`/api/users/${friendId}`));
     if (friendQuery.ok) {
       try {
         const friendData = await friendQuery.json();
@@ -66,26 +66,26 @@ async function openChat(friendId) {
 
         const chatHeader = document.querySelector(".current-chat__header");
         chatHeader.addEventListener("click", (e) => {
-          window.location.href = `/users/${friendData.id}`;
+          window.location.href = routePatcher(`/users/${friendData.id}`);
         });
         chatHeader.classList.add("current-chat__header--friend-selected");
         const chatHeaderText = document.querySelector(".current-chat__header h2");
         const chatPhoto = document.querySelector(".current-chat__photo");
         chatHeaderText.textContent = `${friendData.first_name} ${friendData.last_name}`;
-        chatPhoto.src = `/api/photo/${friendData.id}`;
+        chatPhoto.src = routePatcher(`/api/photo/${friendData.id}`);
         chatPhoto.style.display = "block";
       } catch (ex) {
         console.error("Failed to update chat header.");
       }
     } else if (friendQuery.status == 401) {
       // Request not authorized, ask user to log in again.
-      return window.location.href = "/";
+      return window.location.href = routePatcher("/");
     }
 
-    const chatQuery = await fetch(`/api/chat/${friendId}`);
+    const chatQuery = await fetch(routePatcher(`/api/chat/${friendId}`));
     if (!chatQuery.ok) {
       console.error("Failed to get chat messages.");
-      if (chatQuery.status == 401) window.location.href = "/";
+      if (chatQuery.status == 401) window.location.href = routePatcher("/");
       return;
     }
 

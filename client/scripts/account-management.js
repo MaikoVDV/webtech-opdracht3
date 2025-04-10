@@ -3,13 +3,15 @@ Responsible for getting data on the currently logged-in user,
 and for adding functionality to the login- and register forms.
 */
 
+import { routePatcher } from "./utils.js";
+
 let loggedInUserData;
 // Fetch the logged in user, and save it in loggedInUserData so subsequent fetches aren't necessary
 export const getLoggedInUser = async () => {
   if (loggedInUserData) {
     return loggedInUserData;
   }
-  const response = await fetch(`/api/currentUser`);
+  const response = await fetch(routePatcher(`api/currentUser`));
   const user = await response.json();
   if (response.ok) {
     loggedInUserData = user;
@@ -20,8 +22,10 @@ export const getLoggedInUser = async () => {
 }
 
 window.addEventListener("load", () => {
+  const windowPath = window.location.pathname.split('/');
+  const finalPartOfPath = windowPath[windowPath.length - 1];
   // When on the root route, try to add functionality to the login form.
-  if (window.location.pathname == "/") {
+  if (finalPartOfPath == "") {
     try {
       const loginForm = document.getElementById("login-form");
       loginForm.addEventListener("submit", async (event) => {
@@ -30,7 +34,7 @@ window.addEventListener("load", () => {
         const formData = new FormData(loginForm);
         const data = Object.fromEntries(formData.entries());
 
-        const res = await fetch("../api/login", {
+        const res = await fetch(routePatcher("api/login"), {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify(data)
@@ -38,7 +42,7 @@ window.addEventListener("load", () => {
 
         if (res.ok) {
           // Login was successful
-          window.location.replace("users/");
+          window.location.replace(routePatcher("users"));
         } else {
           // Login was unsuccessful, display error message.
           const result = await res.json();
@@ -49,7 +53,7 @@ window.addEventListener("load", () => {
   }
 
   // When on the registry route, try to add functionality to the register form.
-  if (window.location.pathname == "/register") {
+  if (finalPartOfPath == "register") {
     try {
       const registerForm = document.querySelector(".form__button#submit");
       registerForm.addEventListener("click", async () => {
@@ -68,14 +72,14 @@ window.addEventListener("load", () => {
           };
         };
 
-        const res = await fetch("/api/register", {
+        const res = await fetch(routePatcher("api/register"), {
           method: "POST",
           body: formData
         });
 
         if (res.ok) {
           // Login was successful
-          window.location.replace("/users/");
+          window.location.replace(routePatcher("users"));
         } else {
           // Login was unsuccessful, display error message.
           const result = await res.json();

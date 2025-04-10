@@ -13,3 +13,7 @@ export const elementBuilder = (element, args) => {
 
   return builtElement;
 };
+
+const basePath = `/${window.location.pathname.split('/')[1]}`;
+
+export const routePatcher = (path) => `${basePath}/${path}`;

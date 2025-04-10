@@ -1,4 +1,4 @@
-import { elementBuilder } from "./utils.js";
+import { elementBuilder, routePatcher } from "./utils.js";
 
 /*
 Fills the sent friend requests box and received friend requests box with the appropriate data, fetched from the server.
@@ -11,7 +11,7 @@ window.addEventListener("load", async () => {
 
 // Updates the friend requests list as specified at top of file.
 async function updateFriendRequestList() {
-  const requestsQuery = await fetch("/api/friend-requests", {
+  const requestsQuery = await fetch(routePatcher("api/friend-requests"), {
     method: "GET",
   });
   const requests = await requestsQuery.json();
@@ -29,7 +29,7 @@ async function updateFriendRequestList() {
     requests.received.forEach(receivedRequest => {
       const requestItem = elementBuilder("li", { class: "friend-req-list__item" });
       const profileDisplay = elementBuilder("div");
-      profileDisplay.appendChild(elementBuilder("img", { src: `/api/photo/${receivedRequest.id}` }));
+      profileDisplay.appendChild(elementBuilder("img", { src: routePatcher(`api/photo/${receivedRequest.id}`) }));
       profileDisplay.appendChild(elementBuilder("p", { class: "friend-req-list__student-name", textContent: `${receivedRequest.first_name} ${receivedRequest.last_name}` }));
       requestItem.appendChild(profileDisplay);
 
@@ -38,7 +38,7 @@ async function updateFriendRequestList() {
         const acceptBtn = elementBuilder("button", { class: "friend-req-list__accept-btn" });
         acceptBtn.appendChild(elementBuilder("p", { textContent: "Accept"}));
         acceptBtn.addEventListener("click", async () => {
-          await fetch(`/api/friend-requests/${receivedRequest.id}/respond`, {
+          await fetch(routePatcher(`api/friend-requests/${receivedRequest.id}/respond`), {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
@@ -51,7 +51,7 @@ async function updateFriendRequestList() {
         const rejectBtn = elementBuilder("button", { class: "friend-req-list__reject-btn" });
         rejectBtn.appendChild(elementBuilder("p", { textContent: "Reject"}));
         rejectBtn.addEventListener("click", async () => {
-          await fetch(`/api/friend-requests/${receivedRequest.id}/respond`, {
+          await fetch(routePatcher(`api/friend-requests/${receivedRequest.id}/respond`), {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
@@ -85,7 +85,7 @@ async function updateFriendRequestList() {
     requests.sent.forEach(sentRequest => {
       const requestItem = elementBuilder("li", { class: "friend-req-list__item" });
       const profileDisplay = elementBuilder("div");
-      profileDisplay.appendChild(elementBuilder("img", { src: `/api/photo/${sentRequest.target_id}` }));
+      profileDisplay.appendChild(elementBuilder("img", { src: routePatcher(`api/photo/${sentRequest.target_id}`) }));
       profileDisplay.appendChild(elementBuilder("p", { class: "friend-req-list__student-name", textContent: `${sentRequest.first_name} ${sentRequest.last_name}` }));
       requestItem.appendChild(profileDisplay);
 
@@ -96,7 +96,7 @@ async function updateFriendRequestList() {
   } catch (e) {
     console.error(e);
     if (requestsQuery.status == 401) {
-      return window.location.href = "/";
+      return window.location.href = routePatcher("");
     }
   }
 }

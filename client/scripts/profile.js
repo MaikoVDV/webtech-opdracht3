@@ -1,4 +1,4 @@
-import { elementBuilder } from "./utils.js";
+import { elementBuilder, routePatcher } from "./utils.js";
 import { openEditModal, closeEditModal, saveChanges, onPhotoButtonClick, onModalPhotoChange, displayDataInModalFields } from "./profile-modal.js";
 import { getLoggedInUser } from "./account-management.js";
 
@@ -10,10 +10,10 @@ Also adds content to the profile editing modal and course view modal.
 // Loads the profile data of the user on this route.
 async function loadProfileData() {
   const userId = window.location.pathname.split('/').pop(); // Get user id from URL
-  const response = await fetch(`/api/users/${userId}`);
+  const response = await fetch(routePatcher(`api/users/${userId}`));
   if (response.status == 401) {
     // Request not authorized, ask user to log in again.
-    return window.location.href = "/";
+    return window.location.href = routePatcher("");
   }
   if (response.status == 404) {
     // User wasn't found. Simply return. This leaves a broken webpage but no user should normally arrive at an unknown user's page,
@@ -34,7 +34,7 @@ async function loadProfileData() {
   // Add remove friend button (invisible when user is not friends with the logged-in user.)
   const removeFriendButton = document.querySelector(".profile__button-remove-friend");
   removeFriendButton.addEventListener("click", async () => {
-    await fetch(`/api/friend-requests/${userId}`, {
+    await fetch(routePatcher(`api/friend-requests/${userId}`), {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
@@ -49,7 +49,7 @@ async function loadProfileData() {
   // Add friend button (invisible when user is not taking the same course as the logged-in user.)
   const addFriendButton = document.querySelector(".profile__button-add-friend");
   addFriendButton.addEventListener("click", async () => {
-    await fetch(`/api/friend-requests/${userId}`, {
+    await fetch(routePatcher(`api/friend-requests/${userId}`), {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
@@ -76,7 +76,7 @@ async function loadProfileData() {
   document.querySelector("#program-display").textContent = `Program: ${user.program}`;
 
   const pictureDisplay = document.querySelector(".profile__picture");
-  pictureDisplay.src = `/api/photo/${userId}`;
+  pictureDisplay.src = routePatcher(`api/photo/${userId}`);
 
   displayDataInModalFields(user);
 
@@ -90,7 +90,7 @@ async function loadProfileData() {
   profileModal.querySelector(".form__button").addEventListener("click", onPhotoButtonClick);
 
   // Display the student's friends
-  const friendsQuery = await fetch(`/api/users/${userId}/friends`);
+  const friendsQuery = await fetch(routePatcher(`api/users/${userId}/friends`));
   if (friendsQuery.ok) {
     const friendsContainer = document.querySelector("#friends-container");
     const friends = await friendsQuery.json();
@@ -104,14 +104,14 @@ async function loadProfileData() {
       }));
       friendItem.appendChild(elementBuilder("a", {
         textContent: friend.first_name,
-        href: `/users/${friend.id}`
+        href: routePatcher(`users/${friend.id}`)
       }));
     });
   }
 
 
   // Display the student's taken courses
-  const coursesQuery = await fetch(`/api/users/${userId}/courses`);
+  const coursesQuery = await fetch(routePatcher(`api/users/${userId}/courses`));
   if (coursesQuery.ok) {
     const coursesContainer = document.querySelector("#courses-container");
     const courses = await coursesQuery.json();
@@ -146,22 +146,22 @@ async function loadProfileData() {
         modalDescription.textContent = courses[courseId - 1].description;
         modalTeacher.textContent = `${courses[courseId - 1].teacher_first_name} ${courses[courseId - 1].teacher_last_name}`;
 
-        const participantsQuery = await fetch(`/api/users/${userId}/${courseId}/participants`);
+        const participantsQuery = await fetch(routePatcher(`api/users/${userId}/${courseId}/participants`));
         const participants = await participantsQuery.json();
 
         modalStudents.innerHTML = '';
         for (const participant of participants) {
-          const userQuery = await fetch(`/api/users/${participant.student_id}`);
+          const userQuery = await fetch(routePatcher(`api/users/${participant.student_id}`));
           const user = await userQuery.json();
 
           const studentElement = document.createElement("li");
           studentElement.appendChild(elementBuilder("img", {
-            src: `/api/photo/${user.id}`,
+            src: routePatcher(`api/photo/${user.id}`),
             alt: `Photo of ${user.first_name}`
           }));
           studentElement.appendChild(elementBuilder("a", {
             textContent: `${user.first_name} ${user.last_name}`,
-            href: `/users/${user.id}`
+            href: routePatcher(`users/${user.id}`)
           }));
           modalStudents.appendChild(studentElement);
         };

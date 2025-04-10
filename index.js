@@ -7,7 +7,7 @@ import { updateUserInfo } from "./api/profile-management.js";
 
 import fs from "fs";
 import express from "express";
-import dotenv from "dotenv";
+import "dotenv/config.js";
 import morgan from "morgan";
 import session from "express-session";
 import bcrypt from "bcrypt";
@@ -19,8 +19,13 @@ import { body, check, param, validationResult } from "express-validator"; // Val
 export const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const app = express();
 const port = 8010;
-const basepath = process.env.BASE_PATH || "";
+// const basepath = process.env.BASE_PATH || "";
 
+const basepath = "";
+const bazingaPath = "/group10";
+
+console.log(process.env.BASE_PATH);
+console.log(basepath);
 /*
 The main JavaScript file, which configures all our packages and express routes.
 Routes are all specified individually here with their appropriate middlewares (mostly for input validation).
@@ -59,7 +64,7 @@ app.param("id", checkShareCourses);
 // Necessary to send CSS and client JS. Exposes some routes like /index.js that would normally be
 // at /, but that poses no security risks and comes at no inconvenience to the end user,
 // while keeping the server-side codebase fairly clean.
-app.use(express.static("client"));
+app.use(basepath, express.static(path.join(__dirname, "/client")));
 
 
 // == CLIENT ROUTES ==
@@ -73,15 +78,17 @@ app.get(`${basepath}/chat`, (req, res) => {
   res.sendFile(path.join(__dirname, "client/chat.html"));
 });
 app.get(`${basepath}/friends`, (req, res) => {
-  res.sendFile(path.join(__dirname, "/client/friend-requests.html"));
+  res.sendFile(path.join(__dirname, "client/friend-requests.html"));
 });
 
 app.get(`${basepath}/users`, async (req, res) => {
   // If logged in, redirect to own user's page.
   if (req.session.user) {
-    res.redirect(`/users/${req.session.user.id}`);
+    console.log(basepath);
+    console.log(`${bazingaPath}/users/${req.session.user.id}`);
+    return res.redirect(`${bazingaPath}/users/${req.session.user.id}`);
   } else {
-    res.redirect(`/`);
+    return res.redirect(`${basepath}`);
   }
 });
 
